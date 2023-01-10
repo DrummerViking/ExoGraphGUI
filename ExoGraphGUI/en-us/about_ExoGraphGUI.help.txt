@@ -1,0 +1,11 @@
+﻿TOPIC
+	about_ExoGraphGUI
+	
+SHORT DESCRIPTION
+	Explains how to use the ExoGraphGUI powershell module
+	
+LONG DESCRIPTION
+	<Insert Content here>
+
+KEYWORDS
+	ExoGraphGUI
