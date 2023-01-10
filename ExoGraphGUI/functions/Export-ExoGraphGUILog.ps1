@@ -1,4 +1,4 @@
-﻿function Export-EWSGuiLog {
+﻿function Export-ExoGraphGuiLog {
 	<#
 	.SYNOPSIS
 	This function will export current PSFramework logs.
@@ -20,19 +20,19 @@
 	Defines how old we will go to fetch the logs. Valid range is between 1 through 7 days old. Default Value is 1
 	
 	.EXAMPLE
-	PS C:\> Export-EWSGuiLog -OutputType CSV
+	PS C:\> Export-ExoGraphGuiLog -OutputType CSV
 	In this example, the script will fetch all logs within the last 24 hrs (by default), and export to CSV to default location at the Desktop.
 	
 	.EXAMPLE
-	PS C:\> Export-EWSGuiLog -OutputType GridView -DaysOld 3
+	PS C:\> Export-ExoGraphGuiLog -OutputType GridView -DaysOld 3
 	In this example, the script will fetch all logs within the last 3 days, and displays them in powershell's GridView.
 
 	.EXAMPLE
-	PS C:\> Export-EWSGuiLog -OutputType CSV,GridView -DaysOld 5
+	PS C:\> Export-ExoGraphGuiLog -OutputType CSV,GridView -DaysOld 5
 	In this example, the script will fetch all logs within the last 5 days, export to CSV to default location at the Desktop and also displays in powershell's GridView.
 
 	.EXAMPLE
-	PS C:\> Export-EWSGuiLog -OutputType CSV,GridView -DaysOld 7 -FilePath "C:\Temp\newLog.csv"
+	PS C:\> Export-ExoGraphGuiLog -OutputType CSV,GridView -DaysOld 7 -FilePath "C:\Temp\newLog.csv"
 	In this example, the script will fetch all logs within the last 7 days, export to CSV to path "C:\Temp\newLog.csv" and also displays them in powershell's GridView.
 	#>
 	[CmdletBinding()]
@@ -43,7 +43,7 @@
 			}
 			return $true
 		})]
-		[String]$FilePath = "$home\Desktop\$(get-date -Format "yyyy-MM-dd HH_mm_ss") - EWSGui logs.csv",
+		[String]$FilePath = "$([Environment]::GetFolderPath("Desktop"))\$(get-date -Format "yyyy-MM-dd HH_mm_ss") - ExoGraphGui logs.csv",
 		
 		[ValidateSet('CSV', 'GridView')]
 		[string[]]$OutputType = "GridView",
