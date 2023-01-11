@@ -11,12 +11,9 @@
 
     .PARAMETER TenantID
     String parameter with the TenantID of your AzureAD tenant.
-
-    .PARAMETER ClientSecret
-    String parameter with the Client Secret which is configured in the AzureAD App.
-
+    
     .PARAMETER CertificateThumbprint
-
+    String parameter with the certificate thumbprint which is configured in the AzureAD App.
 
     .EXAMPLE
     PS C:\> Connect-ExoGraphGuiService
@@ -36,7 +33,7 @@
         $latest = $modules | Sort-Object version -Descending -Top 1
         if ($latest.Version -ge [version]"2.0.0") {
             $Attribute = New-Object System.Management.Automation.ParameterAttribute
-            $ttribute.Mandatory = $false
+            $Attribute.Mandatory = $false
             $Attribute.HelpMessage = "String parameter with the Client Secret which is configured in the AzureAD App."
 
             #create an attributecollection object for the attribute we just created.
@@ -79,7 +76,7 @@
             $conn = Get-MgContext
         }
         if ( $null -eq $conn.Account ) {
-            Write-PSFMessage -Level Host -Message "Currently connect with App Account: $($conn.AppName)"
+            Write-PSFMessage -Level Host -Message "Currently connected with App Account: $($conn.AppName)"
         }
         else {
             Write-PSFMessage -Level Host -Message "Currently connected with User Account: $($conn.Account)"
