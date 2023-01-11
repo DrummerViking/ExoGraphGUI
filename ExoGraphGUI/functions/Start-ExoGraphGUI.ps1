@@ -29,6 +29,9 @@
     .PARAMETER TenantID
     This is an optional parameter. String parameter with the TenantID your AzureAD tenant.
 
+    .PARAMETER CertificateThumbprint
+    This is an optional parameter. String parameter with the certificate thumbprint which is configured in the AzureAD App.
+
     .PARAMETER ClientSecret
     This is an optional parameter. String parameter with the Client Secret which is configured in the AzureAD App.
 
@@ -52,8 +55,10 @@
 
         [String] $TenantID,
 
+        [Parameter(ParameterSetName="Certificate")]
         [String] $CertificateThumbprint,
 
+        [Parameter(ParameterSetName="ClientSecret")]
         [String] $ClientSecret
     )
     $script:nl = "`r`n"
@@ -93,12 +98,14 @@
         $dgResults = New-Object System.Windows.Forms.DataGridView
         $txtBoxResults = New-Object System.Windows.Forms.Label
         $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
-        [String]$email = $null
         #endregion Generated Form Objects
 
         # Connecting to EWS and creating service object
         $service = Connect-ExoGraphGuiService -ClientID $ClientID -TenantID $TenantID -ClientSecret $ClientSecret -CertificateThumbprint $CertificateThumbprint
-
+        $Account = $service.Account
+        if (-not($service.Account)) {
+            $Account = [Microsoft.VisualBasic.Interaction]::InputBox("Enter user's UPN to work with", "ExoGraphGUI", "")
+        }
         $ExpandFilters = {
             # Removing all controls, in order to reload the screen appropiately for each selection
             $PremiseForm.Controls.RemoveByKey("FromDate")
@@ -119,13 +126,13 @@
             $PremiseForm.Controls.RemoveByKey("comboBoxConfig")
 
             $labFromDate = New-Object System.Windows.Forms.Label
-            $global:FromDatePicker = New-Object System.Windows.Forms.DateTimePicker
+            $FromDatePicker = New-Object System.Windows.Forms.DateTimePicker
             $labToDate = New-Object System.Windows.Forms.Label
-            $global:ToDatePicker = New-Object System.Windows.Forms.DateTimePicker
+            $ToDatePicker = New-Object System.Windows.Forms.DateTimePicker
             $labSubject = New-Object System.Windows.Forms.Label
             $txtBoxSubject = New-Object System.Windows.Forms.TextBox
             $labFolderID = New-Object System.Windows.Forms.Label
-            $global:txtBoxFolderID = New-Object System.Windows.Forms.TextBox
+            $txtBoxFolderID = New-Object System.Windows.Forms.TextBox
             $labTargetFolderID = New-Object System.Windows.Forms.Label
             $txtBoxTargetFolderID = New-Object System.Windows.Forms.TextBox
             $labelCombobox = New-Object System.Windows.Forms.Label
@@ -395,7 +402,7 @@
         $PremiseForm.Controls.Add($radiobutton13)
         $PremiseForm.Controls.Add($radiobutton14)
         $PremiseForm.Controls.Add($radiobutton15)
-        if ( $null -eq $conn.Account ) {
+        if ( $null -eq $service.Account ) {
             $PremiseForm.Controls.Add($radiobutton16)
         }
         $PremiseForm.Controls.Add($buttonGo)
@@ -410,7 +417,7 @@
         $PremiseForm.ClientSize = New-Object System.Drawing.Size(850, 720)
         $PremiseForm.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $PremiseForm.Name = "form1"
-        $PremiseForm.Text = "Managing user: " + $email + ". Choose your Option"
+        $PremiseForm.Text = "Managing user: $Account. Choose your Option"
         $PremiseForm.StartPosition = "CenterScreen"
         $PremiseForm.KeyPreview = $True
         $PremiseForm.Add_KeyDown({ if ($_.KeyCode -eq "Escape") { $PremiseForm.Close() } })
@@ -602,23 +609,23 @@
         $buttonGo.Text = "Go"
         $buttonGo.UseVisualStyleBackColor = $True
         $buttonGo.add_Click({
-            if ($radiobutton1.Checked) { Method1to5 }
-            elseif ($radiobutton2.Checked) { Method1to5 }
-            elseif ($radiobutton3.Checked) { Method1to5 }
-            elseif ($radiobutton4.Checked) { Method1to5 }
-            elseif ($radiobutton5.Checked) { Method1to5 }
-            elseif ($radiobutton6.Checked) { Method6 }
-            elseif ($radiobutton7.Checked) { Method7 }
-            elseif ($radiobutton8.Checked) { Method8 }
-            elseif ($radiobutton9.Checked) { Method9 }
-            elseif ($radiobutton10.Checked) { Method10 }
-            elseif ($radiobutton11.Checked) { Method11 }
-            elseif ($radiobutton12.Checked) { Method12 }
-            elseif ($radiobutton13.Checked) { Method13 }
-            elseif ($radiobutton14.Checked) { Method14 }
-            elseif ($radiobutton15.Checked) { Method15 }
-            elseif ($radiobutton16.Checked) { Method16 }
-        })
+                if ($radiobutton1.Checked) { Method1to5 }
+                elseif ($radiobutton2.Checked) { Method1to5 }
+                elseif ($radiobutton3.Checked) { Method1to5 }
+                elseif ($radiobutton4.Checked) { Method1to5 }
+                elseif ($radiobutton5.Checked) { Method1to5 }
+                elseif ($radiobutton6.Checked) { write-host "textbox value $($txtBoxFolderID.Text)" ; Method6 -FolderId $txtBoxFolderID.Text -StartDate $FromDatePicker.Value -EndDate $ToDatePicker.Value -MsgSubject $txtBoxSubject.Text }
+                elseif ($radiobutton7.Checked) { Method7 }
+                elseif ($radiobutton8.Checked) { Method8 }
+                elseif ($radiobutton9.Checked) { Method9 }
+                elseif ($radiobutton10.Checked) { Method10 }
+                elseif ($radiobutton11.Checked) { Method11 }
+                elseif ($radiobutton12.Checked) { Method12 }
+                elseif ($radiobutton13.Checked) { Method13 }
+                elseif ($radiobutton14.Checked) { Method14 }
+                elseif ($radiobutton15.Checked) { Method15 }
+                elseif ($radiobutton16.Checked) { Method16 }
+            })
 
         #"Exit" button
         $buttonExit.DataBindings.DefaultDataSourceUpdateMode = 0

@@ -10,31 +10,43 @@
     Delegated: Mail.ReadBasic
     Application: Mail.ReadBasic.All
     
+    .PARAMETER folderID
+    FolderID value.
+    
+    .PARAMETER StartDate
+    StartDate to search for items.
+    
+    .PARAMETER EndDate
+    EndDate to search for items.
+
+    .PARAMETER MsgSubject
+    Optional parameter to search based on a subject text.
+    
     .EXAMPLE
     PS C:\> Method6
+    
     Method to list items in a specific folders in the user mailbox.
 
     #>
     [CmdletBinding()]
-    param(
-        # Parameters
+    Param(
+        [String] $folderID,
+        [string] $StartDate,
+        [string] $EndDate,
+        [String] $MsgSubject
     )
     $statusBarLabel.Text = "Running..."
     
-    if ( $txtBoxFolderID.Text -ne "" ) {
-        Write-PSFMessage -level host -message "current folderID: $($txtBoxFolderID.text)"
+    if ( $folderID -ne "" ) {
+        Write-PSFMessage -level host -message "current folderID: $folderID, $startdate and $enddate"
         # Creating Filter variables
-        $StartDate = $FromDatePicker.Value
-        $EndDate = $ToDatePicker.Value
-        $MsgSubject = $txtBoxSubject.text
-        $array = New-Object System.Collections.ArrayList
-
         $filter = "ReceivedDateTime ge $StartDate and receivedDateTime lt $EndDate"
         if ($MsgSubject -ne "") {
             $filter += " and Subject -eq '$MsgSubject'"
         }
         
-        $msgs = Get-MgUserMailFolderMessage -UserId $conn.Account -MailFolderId $txtBoxFolderID.text -Filter $filter | Select-Object subject, @{N="Sender";E={$_.Sender.EmailAddress.Address}}, ReceivedDateTime, isRead
+        $array = New-Object System.Collections.ArrayList
+        $msgs = Get-MgUserMailFolderMessage -UserId $Account -MailFolderId $folderID -Filter $filter | Select-Object subject, @{N = "Sender"; E = { $_.Sender.EmailAddress.Address } }, ReceivedDateTime, isRead
         $null = $array.AddRange($msgs)
 
         $dgResults.datasource = $array

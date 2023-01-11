@@ -30,10 +30,9 @@
 
             $ParentDisplayname
         )
-        foreach ($folder in (Get-MgUserMailFolderChildFolder -UserId $conn.Account -MailFolderId $ParentFolderId -All -Property *)) {
+        foreach ($folder in (Get-MgUserMailFolderChildFolder -UserId $Account -MailFolderId $ParentFolderId -All -Property *)) {
             $folderpath = $ParentDisplayname + $folder.DisplayName
             $line = $folder | Select-Object @{N="FolderPath";E={$folderpath}},ChildFolderCount,TotalItemCount,UnreadItemCount,Id
-            $line
             $null = $array.add($line)
             if ( $folder.ChildFolderCount -gt 0 ) {
                 Find-Subfolders -ParentFolderId $folder.id -Array $array -ParentDisplayname "$folderpath\"
@@ -44,10 +43,10 @@
     #listing all available folders in the mailbox
     $array = New-Object System.Collections.ArrayList
     if ($radiobutton1.Checked) {
-        $parentFolders = (Get-MgUserMailFolder -UserId $conn.Account -MailFolderId "msgfolderroot").Id
+        $parentFolders = (Get-MgUserMailFolder -UserId $Account -MailFolderId "msgfolderroot").Id
     }
     elseif ($radiobutton4.Checked) {
-        $deletions = Get-MgUserMailFolder -UserId $conn.Account -MailFolderId "recoverableitemsdeletions"
+        $deletions = Get-MgUserMailFolder -UserId $Account -MailFolderId "recoverableitemsdeletions"
         $parentFolders = $deletions.ParentFolderId
     }
     Find-Subfolders -ParentFolderId $parentFolders -Array $array -ParentDisplayname "\"
