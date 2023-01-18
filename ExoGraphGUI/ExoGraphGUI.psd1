@@ -28,10 +28,11 @@
 	RequiredModules = @(
 		@{ ModuleName='PSFramework'; ModuleVersion='1.7.249' }
 		#@{ ModuleName='MSAL.PS'; ModuleVersion='4.37.0.0' }
-		'Microsoft.Graph.Authentication'
-		#'Microsoft.Graph.Calendar'
-		'Microsoft.Graph.Mail'
-		'Microsoft.Graph.Users'
+		@{ ModuleName='Microsoft.Graph.Authentication'; ModuleVersion='1.20.0' }
+		#@{ ModuleName='Microsoft.Graph.Calendar'; ModuleVersion='1.20.0' }
+		@{ ModuleName='Microsoft.Graph.Mail'; ModuleVersion='1.20.0' }
+		#@{ ModuleName='Microsoft.Graph.Users'; ModuleVersion='1.20.0' }
+		@{ ModuleName='Microsoft.Graph.Users.Actions'; ModuleVersion='1.20.0' }
 	)
 	
 	# Assemblies that must be loaded prior to importing this module

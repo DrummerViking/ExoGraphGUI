@@ -5,15 +5,25 @@
     
     .DESCRIPTION
     Method to Delete a subset of items in a folder using Date Filters and/or subject.
+    Module required: Microsoft.Graph.Mail
+    Scope needed:
+    Delegated: Mail.ReadWrite
+    Application: Mail.ReadWrite
+
+    .PARAMETER Account
+    User's UPN to get delete messages from.
     
-    .PARAMETER ClientID
-    String parameter with the ClientID (or AppId) of your AzureAD Registered App.
+    .PARAMETER FolderID
+    FolderID value to get mail messages from.
+    
+    .PARAMETER StartDate
+    StartDate to search for items.
+    
+    .PARAMETER EndDate
+    EndDate to search for items.
 
-    .PARAMETER TenantID
-    String parameter with the TenantID your AzureAD tenant.
-
-    .PARAMETER ClientSecret
-    String parameter with the Client Secret which is configured in the AzureAD App.
+    .PARAMETER MsgSubject
+    Optional parameter to search based on a subject text.
 
     .EXAMPLE
     PS C:\> Method12
@@ -22,76 +32,40 @@
     #>
     [CmdletBinding()]
     param(
-        [String] $ClientID,
-
-        [String] $TenantID,
-
-        [String] $ClientSecret
+        [String] $Account,
+        [String] $FolderID,
+        [string] $StartDate,
+        [string] $EndDate,
+        [String] $MsgSubject
     )
     $statusBarLabel.Text = "Running..."
 
-    Test-StopWatch -Service $service -ClientID $ClientID -TenantID $TenantID -ClientSecret $ClientSecret
-
-    if ( $txtBoxFolderID.Text -ne "" )
+    if ( $FolderID -ne "" )
     {
         # Creating Filter variables
-        $FolderID = new-object Microsoft.Exchange.WebServices.Data.FolderId($txtBoxFolderID.Text)
-        $Folder = [Microsoft.Exchange.WebServices.Data.Folder]::Bind($service,$FolderID)
-        $StartDate = $FromDatePicker.Value
-        $EndDate = $ToDatePicker.Value
-        $MsgSubject = $txtBoxSubject.text
-        [int]$i = 0
+        $filter = $null
+        if ($MsgSubject -ne "") {
+            $filter = "Subject eq '$MsgSubject'"
+        }
         
-        # Combining Filters into a single Collection
-        $filters = @()
-        if ( $MsgSubject -ne "" )
-        {
-            $Filter1 = New-Object Microsoft.Exchange.WebServices.Data.SearchFilter+ContainsSubstring([Microsoft.Exchange.WebServices.Data.EmailMessageSchema]::Subject,$MsgSubject, [Microsoft.Exchange.WebServices.Data.ContainmentMode]::ExactPhrase, [Microsoft.Exchange.WebServices.Data.ComparisonMode]::IgnoreCase)
-            $filters += $Filter1
-        }
-        if ( $StartDate -ne "" )
-        {
-            $Filter2 = New-Object Microsoft.Exchange.WebServices.Data.SearchFilter+IsGreaterThanOrEqualTo([Microsoft.Exchange.WebServices.Data.ItemSchema]::DateTimeReceived,[DateTime]$StartDate)
-            $filters += $Filter2
-        }
-        if ( $EndDate -ne "" )
-        {
-            $Filter3 = New-Object Microsoft.Exchange.WebServices.Data.SearchFilter+IsLessThanOrEqualTo([Microsoft.Exchange.WebServices.Data.ItemSchema]::DateTimeReceived,[DateTime]$EndDate)
-            $filters += $Filter3
-        }
-
-        $searchFilter = New-Object Microsoft.Exchange.WebServices.Data.SearchFilter+SearchFilterCollection([Microsoft.Exchange.WebServices.Data.LogicalOperator]::AND,$filters)
-
-        if ( $filters.Length -eq 0 )
-        {
-            $searchFilter = $Null
-        }
-
-        $ivItemView =  New-Object Microsoft.Exchange.WebServices.Data.ItemView(250)
-        $fiItems = $null
-
         $array = New-Object System.Collections.ArrayList
-        do {
-            $fiItems = $service.FindItems($Folder.Id, $searchFilter, $ivItemView)
-            foreach ( $Item in $fiItems.Items )
-            {
-                $i++
-                $output = $Item | Select-Object @{Name="Action";Expression={"Deleting Item"}}, DateTimeReceived, Subject
-                $array.Add($output)
-            
-                $tempItem = [Microsoft.Exchange.WebServices.Data.Item]::Bind($service,$Item.Id)
-                $tempItem.Delete($ComboOption, $True)
-            }
-            $ivItemView.Offset += $fiItems.Items.Count
-            Start-Sleep -Milliseconds 500
-        } while ( $fiItems.MoreAvailable -eq $true )
+        [int]$i = 0
+
+        $msgs = Get-MgUserMailFolderMessage -UserId $Account -MailFolderId $folderID -Filter $filter -All | Where-Object { $_.ReceivedDateTime -ge $StartDate -and $_.ReceivedDateTime -lt $EndDate } | Select-Object id, subject, ReceivedDateTime
+        foreach ( $msg in $msgs ) {
+            $i++
+            Remove-MgUserMessage -UserId $Account -MessageId $msg.Id
+            $output = $msg | Select-Object @{Name="Action";Expression={"Deleting Item"}}, ReceivedDateTime, Subject
+            $array.Add($output)
+        }
+
         $dgResults.datasource = $array
         $dgResults.AutoResizeColumns()
         $dgResults.Visible = $True
         $txtBoxResults.Visible = $False
         $PremiseForm.refresh()
         $statusBarLabel.text = "Ready. Deleted items: $i"
-        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 12" -Target $email
+        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 12" -Target $Account
     }
     else
     {

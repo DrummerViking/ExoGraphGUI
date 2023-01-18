@@ -313,11 +313,6 @@
                 $PremiseForm.Controls.Add($txtBoxTargetFolderID)
             }
             elseif ($radiobutton12.Checked) {
-                $comboBoxMenu.Items.Add("") | Out-Null
-                $comboBoxMenu.Items.Add("SoftDelete") | Out-Null
-                $comboBoxMenu.Items.Add("HardDelete") | Out-Null
-                $comboBoxMenu.Items.Add("MoveToDeletedItems") | Out-Null
-                $comboBoxMenu.SelectedItem = "MoveToDeletedItems"
                 $PremiseForm.Controls.Add($labFromDate)
                 $PremiseForm.Controls.Add($FromDatePicker)
                 $PremiseForm.Controls.Add($labToDate)
@@ -326,8 +321,6 @@
                 $PremiseForm.Controls.Add($txtBoxSubject)
                 $PremiseForm.Controls.Add($labFolderID)
                 $PremiseForm.Controls.Add($txtBoxFolderID)
-                $PremiseForm.Controls.Add($labelCombobox)
-                $PremiseForm.Controls.Add($comboBoxMenu)
             }
             elseif ($radiobutton14.Checked) {
                 $comboBoxMenu.Items.Add("") | Out-Null
@@ -422,7 +415,6 @@
         $radiobutton1.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton1.Location = New-Object System.Drawing.Point(20, 20)
         $radiobutton1.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton1.TabIndex = 1
         $radiobutton1.Text = "1 - List Folders in Root"
         $radioButton1.Checked = $true
         $radiobutton1.UseVisualStyleBackColor = $True
@@ -433,7 +425,6 @@
         $radiobutton2.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton2.Location = New-Object System.Drawing.Point(20, 50)
         $radiobutton2.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton2.TabIndex = 2
         $radiobutton2.Text = "2 - List Folders in Archive Root"
         $radioButton2.Checked = $false
         $radiobutton2.UseVisualStyleBackColor = $True
@@ -444,7 +435,6 @@
         $radiobutton3.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton3.Location = New-Object System.Drawing.Point(20, 80)
         $radiobutton3.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton3.TabIndex = 3
         $radiobutton3.Text = "3 - List Folders in Public Folder Root"
         $radiobutton3.Checked = $false
         $radiobutton3.UseVisualStyleBackColor = $True
@@ -455,7 +445,6 @@
         $radiobutton4.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton4.Location = New-Object System.Drawing.Point(20, 110)
         $radiobutton4.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton4.TabIndex = 4
         $radiobutton4.Text = "4 - List folders in Recoverable Items Root folder"
         $radiobutton4.Checked = $false
         $radiobutton4.UseVisualStyleBackColor = $True
@@ -466,7 +455,6 @@
         $radiobutton5.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton5.Location = New-Object System.Drawing.Point(20, 140)
         $radiobutton5.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton5.Tabindex = 5
         $radiobutton5.Text = "5 - List folders in Recoverable Items folder in Archive"
         $radiobutton5.Checked = $false
         $radiobutton5.UseVisualStyleBackColor = $True
@@ -477,7 +465,6 @@
         $radiobutton6.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton6.Location = New-Object System.Drawing.Point(20, 170)
         $radiobutton6.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton6.TabIndex = 6
         $radiobutton6.Text = "6 - List Items in a desired Folder"
         $radiobutton6.Checked = $false
         $radiobutton6.UseVisualStyleBackColor = $True
@@ -489,7 +476,6 @@
         $radiobutton7.Location = New-Object System.Drawing.Point(20, 200)
         $radiobutton7.Name = "radiobutton7"
         $radiobutton7.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton7.TabIndex = 7
         $radiobutton7.Text = "7 - Create a custom Folder in Root"
         $radiobutton7.Checked = $false
         $radiobutton7.UseVisualStyleBackColor = $True
@@ -500,7 +486,6 @@
         $radiobutton8.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton8.Location = New-Object System.Drawing.Point(20, 230)
         $radiobutton8.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton8.TabIndex = 8
         $radiobutton8.Text = "8 - Delete a Folder"
         $radiobutton8.Checked = $false
         $radiobutton8.UseVisualStyleBackColor = $True
@@ -522,7 +507,6 @@
         $radiobutton10.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton10.Location = New-Object System.Drawing.Point(400, 20)
         $radiobutton10.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton10.TabIndex = 10
         $radiobutton10.Text = "10 - Get user's OOF Settings"
         $radiobutton10.Checked = $false
         $radiobutton10.UseVisualStyleBackColor = $True
@@ -533,7 +517,6 @@
         $radiobutton11.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton11.Location = New-Object System.Drawing.Point(400, 50)
         $radiobutton11.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton11.TabIndex = 11
         $radiobutton11.Text = "11 - Move items between folders"
         $radiobutton11.Checked = $false
         $radiobutton11.UseVisualStyleBackColor = $True
@@ -544,7 +527,6 @@
         $radiobutton12.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton12.Location = New-Object System.Drawing.Point(400, 80)
         $radiobutton12.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton12.TabIndex = 12
         $radiobutton12.Text = "12 - Delete a subset of items in a folder"
         $radiobutton12.Checked = $false
         $radiobutton12.UseVisualStyleBackColor = $True
@@ -555,7 +537,6 @@
         $radiobutton13.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton13.Location = New-Object System.Drawing.Point(400, 110)
         $radiobutton13.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton13.TabIndex = 13
         $radiobutton13.Text = "13 - Get user's Delegate information"
         $radiobutton13.Checked = $false
         $radiobutton13.UseVisualStyleBackColor = $True
@@ -566,7 +547,6 @@
         $radiobutton14.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton14.Location = New-Object System.Drawing.Point(400, 140)
         $radiobutton14.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton14.TabIndex = 14
         $radiobutton14.Text = "14 - Change sensitivity to items in a folder"
         $radiobutton14.Checked = $false
         $radiobutton14.UseVisualStyleBackColor = $True
@@ -577,7 +557,6 @@
         $radiobutton15.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton15.Location = New-Object System.Drawing.Point(400, 170)
         $radiobutton15.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton15.TabIndex = 15
         $radiobutton15.Text = "15 - Remove OWA configurations"
         $radiobutton15.Checked = $false
         $radiobutton15.UseVisualStyleBackColor = $True
@@ -614,9 +593,9 @@
                 elseif ($radiobutton8.Checked) { Method8 -Account $Account -Folderid $txtBoxFolderID.Text }
                 elseif ($radiobutton9.Checked) { Method9 -Account $Account }
                 elseif ($radiobutton10.Checked) { Method10 -Account $Account }
-                elseif ($radiobutton11.Checked) { Method11 }
-                elseif ($radiobutton12.Checked) { Method12 }
-                elseif ($radiobutton13.Checked) { Method13 }
+                elseif ($radiobutton11.Checked) { Method11 -Account $Account -FolderId $txtBoxFolderID.Text -TargetFolderID $txtBoxTargetFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
+                elseif ($radiobutton12.Checked) { Method12 -Account $Account -FolderId $txtBoxFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
+                elseif ($radiobutton13.Checked) { Method13 -Account $Account }
                 elseif ($radiobutton14.Checked) { Method14 }
                 elseif ($radiobutton15.Checked) { Method15 }
                 elseif ($radiobutton16.Checked) { $Account = Method16 -Account $txtBoxFolderID.Text }
@@ -627,10 +606,10 @@
         $buttonExit.ForeColor = [System.Drawing.Color]::FromArgb(255, 0, 0, 0)
         $buttonExit.Location = New-Object System.Drawing.Point(700, 50)
         $buttonExit.Size = New-Object System.Drawing.Size(50, 25)
-        $buttonExit.TabIndex = 17
         $buttonExit.Name = "Exit"
         $buttonExit.Text = "Exit"
         $buttonExit.UseVisualStyleBackColor = $True
+        $buttonExit.add_Click({ $PremiseForm.Close(); return })
         
         #TextBox results
         $txtBoxResults.DataBindings.DefaultDataSourceUpdateMode = 0
@@ -667,9 +646,6 @@
         $PremiseForm.add_Load($OnLoadMainWindow_StateCorrection)
         $PremiseForm.Add_Shown({ $PremiseForm.Activate() })
         $PremiseForm.ShowDialog() | Out-Null
-        #exit if 'Exit' button is pushed
-        if ($buttonExit.IsDisposed) { return }
-
     } #End Function
 
     #Call the Function

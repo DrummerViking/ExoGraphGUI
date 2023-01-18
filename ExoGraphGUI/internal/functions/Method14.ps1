@@ -5,16 +5,10 @@
     
     .DESCRIPTION
     Method to change sensitivity to items in a folder.
-    
-    .PARAMETER ClientID
-    String parameter with the ClientID (or AppId) of your AzureAD Registered App.
 
-    .PARAMETER TenantID
-    String parameter with the TenantID your AzureAD tenant.
+    .PARAMETER Account
+    User's UPN to get messages from.
 
-    .PARAMETER ClientSecret
-    String parameter with the Client Secret which is configured in the AzureAD App.
-    
     .EXAMPLE
     PS C:\> Method14
     Method to change sensitivity to items in a folder.
@@ -22,15 +16,9 @@
     #>
     [CmdletBinding()]
     param(
-        [String] $ClientID,
-
-        [String] $TenantID,
-
-        [String] $ClientSecret
+        [String] $Account
     )
     $statusBarLabel.Text = "Running..."
-
-    Test-StopWatch -Service $service -ClientID $ClientID -TenantID $TenantID -ClientSecret $ClientSecret
 
     if ( $txtBoxFolderID.Text -ne "" )
     {

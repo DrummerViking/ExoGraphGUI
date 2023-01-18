@@ -5,96 +5,76 @@
     
     .DESCRIPTION
     Method to move items between folders by using FolderID values.
+    Module required: Microsoft.Graph.Users.Actions
+    Scope needed:
+    Delegated: Mail.ReadWrite
+    Application: Mail.ReadWrite
+
+    .PARAMETER Account
+    User's UPN to get move messages from.
     
-    .PARAMETER ClientID
-    String parameter with the ClientID (or AppId) of your AzureAD Registered App.
+    .PARAMETER FolderID
+    FolderID value to get mail messages from.
 
-    .PARAMETER TenantID
-    String parameter with the TenantID your AzureAD tenant.
+    .PARAMETER TargetFolderID
+    FolderID value to move mail messages to.
+    
+    .PARAMETER StartDate
+    StartDate to search for items.
+    
+    .PARAMETER EndDate
+    EndDate to search for items.
 
-    .PARAMETER ClientSecret
-    String parameter with the Client Secret which is configured in the AzureAD App.
+    .PARAMETER MsgSubject
+    Optional parameter to search based on a subject text.
     
     .EXAMPLE
     PS C:\> Method11
-    Method to move items between folders.
+
+    Moves items from source folder to target folder based on dates and/or subject filters.
 
     #>
     [CmdletBinding()]
-    param(
-        [String] $ClientID,
-
-        [String] $TenantID,
-
-        [String] $ClientSecret
+    Param(
+        [String] $Account,
+        [String] $FolderID,
+        [String] $TargetFolderID,
+        [string] $StartDate,
+        [string] $EndDate,
+        [String] $MsgSubject
     )
     $statusBarLabel.Text = "Running..."
 
-    Test-StopWatch -Service $service -ClientID $ClientID -TenantID $TenantID -ClientSecret $ClientSecret
-
-    if ( $txtBoxFolderID.Text -ne "")
-    {
+    if ( $FolderID -ne "" -and $TargetFolderID -ne "") {
         # Creating Filter variables
-        $FolderID = new-object Microsoft.Exchange.WebServices.Data.FolderId($txtBoxFolderID.Text)
-        $Folder = [Microsoft.Exchange.WebServices.Data.Folder]::Bind($service,$FolderID)
-        $TargetFolderId = new-object Microsoft.Exchange.WebServices.Data.FolderId($txtBoxTargetFolderID.Text)
-        $StartDate = $FromDatePicker.Value
-        $EndDate = $ToDatePicker.Value
-        $MsgSubject = $txtBoxSubject.text
-        [int]$i = 0
-
-        # Combining Filters into a single Collection
-        $filters = @()
-        if ( $MsgSubject -ne "" )
-        {
-            $Filter1 = New-Object Microsoft.Exchange.WebServices.Data.SearchFilter+ContainsSubstring([Microsoft.Exchange.WebServices.Data.EmailMessageSchema]::Subject,$MsgSubject, [Microsoft.Exchange.WebServices.Data.ContainmentMode]::ExactPhrase, [Microsoft.Exchange.WebServices.Data.ComparisonMode]::IgnoreCase)
-            $filters += $Filter1
+        $filter = $null
+        if ($MsgSubject -ne "") {
+            $filter = "Subject eq '$MsgSubject'"
         }
-        if ( $StartDate -ne "" )
-        {
-            $Filter2 = New-Object Microsoft.Exchange.WebServices.Data.SearchFilter+IsGreaterThanOrEqualTo([Microsoft.Exchange.WebServices.Data.ItemSchema]::DateTimeReceived,[DateTime]$StartDate)
-            $filters += $Filter2
-        }
-        if ( $EndDate -ne "" )
-        {
-            $Filter3 = New-Object Microsoft.Exchange.WebServices.Data.SearchFilter+IsLessThanOrEqualTo([Microsoft.Exchange.WebServices.Data.ItemSchema]::DateTimeReceived,[DateTime]$EndDate)
-            $filters += $Filter3
-        }
-
-        $searchFilter = New-Object Microsoft.Exchange.WebServices.Data.SearchFilter+SearchFilterCollection([Microsoft.Exchange.WebServices.Data.LogicalOperator]::AND,$filters)
-
-        if ( $filters.Length -eq 0 )
-        {
-            $searchFilter = $Null
-        }
-
-        $ivItemView =  New-Object Microsoft.Exchange.WebServices.Data.ItemView(250)
-        $fiItems = $null
+        
         $array = New-Object System.Collections.ArrayList
-        do{
-            $fiItems = $service.FindItems($Folder.Id, $searchFilter, $ivItemView)
-            foreach ( $Item in $fiItems.Items )
-            {
-                $i++
-                $output = $Item | Select-Object @{Name="Action";Expression={"Moving Item"}}, DateTimeReceived, Subject
-                $array.Add($output)
-                $tempItem = [Microsoft.Exchange.WebServices.Data.Item]::Bind($service,$Item.Id)
-                $tempItem.Move($TargetFolderId) | Out-Null
-            }
-            $ivItemView.Offset += $fiItems.Items.Count
-            Start-Sleep -Milliseconds 500
-        } while ( $fiItems.MoreAvailable -eq $true )
+        $params = @{
+            DestinationId = $TargetFolderID
+        }
+        $msgs = Get-MgUserMailFolderMessage -UserId $Account -MailFolderId $folderID -Filter $filter -All | Where-Object { $_.ReceivedDateTime -ge $StartDate -and $_.ReceivedDateTime -lt $EndDate } | Select-Object id, subject, @{N = "Sender"; E = { $_.Sender.EmailAddress.Address } }, ReceivedDateTime, isRead
+        
+        [int]$i = 0
+        foreach ( $msg in $msgs ) {
+            $i++
+            $output = $msg | Select-Object @{Name = "Action"; Expression = { "Moving Item" } }, ReceivedDateTime, Subject
+            Move-MgUserMessage -UserId $Account -MessageId $msg.Id -BodyParameter $params
+            $array.Add($output)
+        }
         $dgResults.datasource = $array
         $dgResults.AutoResizeColumns()
         $dgResults.Visible = $True
         $txtBoxResults.Visible = $False
         $PremiseForm.refresh()
         $statusBarLabel.text = "Ready. Moved Items: $i"
-        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 11" -Target $email
+        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 11" -Target $Account
     }
-    else
-    {
-        [Microsoft.VisualBasic.Interaction]::MsgBox("FolderID textbox is empty. Check and try again",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
+    else {
+        [Microsoft.VisualBasic.Interaction]::MsgBox("FolderID textbox or TargetFolderID is empty. Check and try again", [Microsoft.VisualBasic.MsgBoxStyle]::Okonly, "Information Message")
         $statusBarLabel.text = "Process finished with warnings/errors"
     }
 }
