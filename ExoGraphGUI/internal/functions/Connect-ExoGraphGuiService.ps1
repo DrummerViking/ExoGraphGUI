@@ -55,7 +55,7 @@
     Process {
         # Connect to Graph if there is no current context
         $conn = Get-MgContext
-        $requiredScopes = "Mail.ReadBasic", "Mail.ReadWrite", "MailboxSettings.Read"
+        $requiredScopes = "Mail.ReadWrite", "MailboxSettings.Read"
         $compare = Compare-Object -ReferenceObject $conn.scopes -DifferenceObject $requiredScopes -IncludeEqual
         if ( $null -eq $conn -or $compare.sideindicator -contains "=>" ) {
             Write-PSFMessage -Level Host -Message "There is currently no active connection to MgGraph or current connection is missing required scopes: $($requiredScopes -join ", ")"

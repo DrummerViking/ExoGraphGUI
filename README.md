@@ -8,7 +8,8 @@ This tool will connect using Oauth to connect to Exchange Online. If "Modern Aut
 ## Pre-requisites
 
  > This Module requires Powershell 5.1 and above. It should work fine in PS7 and PS5.1.  
- > This Module will install 'Microsoft.Identity.Client' and 'MSAL.PS' modules, in order to use MSAL libraries to connect to Exchange Online.  
+ > This Module will install different Microsoft.Graph.* modules, in order to use graph to connect to Exchange Online.  
+ > Graph scopes required: "Mail.ReadWrite", "MailboxSettings.Read"  
  
 ## Installation
 
