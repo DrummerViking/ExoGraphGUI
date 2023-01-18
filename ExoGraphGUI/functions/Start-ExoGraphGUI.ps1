@@ -37,7 +37,7 @@
     If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
 
     .EXAMPLE
-    PS C:\ Start-ExoGraphGUI.ps1
+    PS C:\ Start-ExoGraphGUI
     Runs the GUI tool to use with Exchange Online.
 
     #>
@@ -50,10 +50,10 @@
 
         [String] $TenantID,
 
-        #[Parameter(ParameterSetName="Certificate")]
+        #[Parameter(Mandatory = $false, ParameterSetName="Certificate")]
         [String] $CertificateThumbprint,
 
-        #[Parameter(ParameterSetName="ClientSecret")]
+        #[Parameter(Mandatory = $false, ParameterSetName="ClientSecret")]
         [String] $ClientSecret
     )
     $script:nl = "`r`n"
@@ -87,6 +87,7 @@
         $radiobutton14 = New-Object System.Windows.Forms.RadioButton
         $radiobutton15 = New-Object System.Windows.Forms.RadioButton
         $radiobutton16 = New-Object System.Windows.Forms.RadioButton
+        $labImpersonation = New-Object System.Windows.Forms.Label
         $buttonGo = New-Object System.Windows.Forms.Button
         $buttonExit = New-Object System.Windows.Forms.Button
 

@@ -21,9 +21,8 @@
     )
     $statusBarLabel.Text = "Running..."
 
-     if ( $Account -ne "" )
-    {
-        $labImpersonation.Location = New-Object System.Drawing.Point(595,200)
+     if ( $Account -ne "" ) {
+        $labImpersonation.Location = New-Object System.Drawing.Point(400,110)
         $labImpersonation.Size = New-Object System.Drawing.Size(300,20)
         $labImpersonation.Name = "labImpersonation"
         $labImpersonation.ForeColor = "Blue"
@@ -34,9 +33,9 @@
         Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 12" -Target $Account
         $statusBarLabel.text = "Ready..."
         $PremiseForm.Refresh()
+        return $Account
     }
-    else
-    {
+    else {
         [Microsoft.VisualBasic.Interaction]::MsgBox("Email Address textbox is empty. Check and try again",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
         $statusBarLabel.text = "Process finished with warnings/errors"
     }

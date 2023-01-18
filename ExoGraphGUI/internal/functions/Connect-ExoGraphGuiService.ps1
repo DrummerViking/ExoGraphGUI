@@ -64,10 +64,10 @@
             # Connecting to graph using Azure App Application flow
             if ( $clientID -ne '' -and $TenantID -ne '' -and ($CertificateThumbprint -ne '' -or $ClientSecret -ne '')) {
                 Write-PSFMessage -Level Host -Message "Connecting to graph with Azure AppId: $ClientID"
-                if ($PSBoundParameters.Contains('CertificateThumbprint')) {
+                if ($PSBoundParameters.ContainsKey('CertificateThumbprint') ) {
                     Connect-MgGraph -ClientId $ClientID -TenantId $TenantID -CertificateThumbprint $CertificateThumbprint
                 }
-                elseif ($PSBoundParameters.Contains('ClientSecret') ) {
+                elseif ($PSBoundParameters.ContainsKey('ClientSecret') ) {
                     $clientCredential = New-Object System.Net.NetworkCredential($ClientID, $ClientSecret)
                     Connect-MgGraph -TenantId $TenantID -ClientSecretCredential $clientCredential
                 }

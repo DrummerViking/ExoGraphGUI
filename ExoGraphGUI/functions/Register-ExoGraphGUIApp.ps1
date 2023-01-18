@@ -26,7 +26,7 @@
     Use this optional parameter to import your app's ClientId, TenantId and ClientSecret into the ExoGraphGUI module. In this way, the next time you run the app it will use the Application flow to authenticate with these values.
 
     .EXAMPLE
-    PS C:\> Register-ExoGraphGUIApp.ps1 -AppName "Graph DemoApp" -StayConnected
+    PS C:\> Register-ExoGraphGUIApp.ps1 -AppName "Graph DemoApp"
 
     The Function will create a new AzureAD App Registration.
     The name of the app will be "ExoGraphGui Registered App".  
@@ -81,17 +81,19 @@
         remove-variable perm
     }
     
-    # Requires an admin
-    Write-PSFMessage -Level Important -Message "Connecting to MgGraph"
-    if ($TenantId) {
-        Connect-MgGraph -Scopes "Application.ReadWrite.All User.Read" -TenantId $TenantId
-    }
-    else {
-        Connect-MgGraph -Scopes "Application.ReadWrite.All User.Read"
-    }
-
     # Get context for access to tenant ID
     $context = Get-MgContext
+    if ( $null -eq $context -or $context.Scopes -notcontains "Application.ReadWrite.All") {
+        # Requires an admin
+        Write-PSFMessage -Level Important -Message "Connecting to MgGraph"
+        if ($TenantId) {
+            Connect-MgGraph -Scopes "Application.ReadWrite.All User.Read" -TenantId $TenantId
+        }
+        else {
+            Connect-MgGraph -Scopes "Application.ReadWrite.All User.Read"
+        }
+    }
+
 
     
     # Load cert
@@ -120,6 +122,8 @@
             -Web @{ RedirectUris = "http://localhost"; } `
             -RequiredResourceAccess @{ ResourceAppId = $graphResourceId; ResourceAccess = $scopesArray.ToArray() } `
             -AdditionalProperties @{} -KeyCredentials @(@{ Type = "AsymmetricX509Cert"; Usage = "Verify"; Key = $cert.RawData })
+        Write-PSFMessage -Level Important -Message "App registration created with app ID $($appRegistration.AppId)"
+        Write-PSFMessage -Level Important -Message "You can now connect running: Start-ExoGraphGUI -ClientID $($appRegistration.AppId) -TenantID $($context.TenantId) -CertificateThumbprint $($cert.Thumbprint)"
     }
     else {
         $appRegistration = New-MgApplication -DisplayName $AppName -SignInAudience "AzureADMyOrg" `
@@ -133,21 +137,26 @@
             endDateTime = (Get-Date).Addyears(1)
         }
         $secret = Add-MgApplicationPassword -applicationId $appObjId.Id -PasswordCredential $passwordCred
+        Write-PSFMessage -Level Important -Message "App registration created with app ID $($appRegistration.AppId)"
         Write-PSFMessage -Level Important -Message "Please take note of your client secret as it will not be shown anymore"
+        Write-PSFMessage -Level Important -Message "You can now connect running: Start-ExoGraphGUI -ClientID $($appRegistration.AppId) -TenantID $($context.TenantId) -ClientSecret $($secret.SecretText)"
     }
-    Write-PSFMessage -Level Important -Message "App registration created with app ID $($appRegistration.AppId)" -ForegroundColor Cyan
     
     # Create corresponding service principal
     New-MgServicePrincipal -AppId $appRegistration.AppId -AdditionalProperties @{} | Out-Null
-    Write-PSFMessage -Level Important -Message "Service principal created"
-    Write-PSFMessage -Level Important -Message "Success"
-
+    Write-PSFMessage -Level Verbose -Message "Service principal created"
+    
     # Generate admin consent URL
     $adminConsentUrl = "https://login.microsoftonline.com/" + $context.TenantId + "/adminconsent?client_id=" + $appRegistration.AppId
     Write-PSFMessage -Level Important -Message "Please go to the following URL in your browser to provide admin consent:"
     Write-PSFMessage -Level Important -Message "$adminConsentUrl"
 
     if ( $ImportAppDataToModule ) {
-        Import-ExoGraphGUIAADAppData -ClientID $appRegistration.AppId -TenantID $context.TenantId -ClientSecret $secret.SecretText
+        if ( -not($UseClientSecret) ) {
+            Import-ExoGraphGUIAADAppData -ClientID $appRegistration.AppId -TenantID $context.TenantId -CertificateThumbprint $($cert.Thumbprint)
+        }
+        else {
+            Import-ExoGraphGUIAADAppData -ClientID $appRegistration.AppId -TenantID $context.TenantId -ClientSecret $secret.SecretText
+        }
     }
 }

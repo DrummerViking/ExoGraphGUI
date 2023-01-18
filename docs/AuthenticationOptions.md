@@ -15,7 +15,7 @@ Register-ExoGraphGUIApp
 The function will create a new AzureAD App Registration.  
 It will download a necessary Graph Powershell module to create the app registration.  
 The name of the app will be "ExoGraphGui Registered App".  
-It will add the following API Permissions: **"Mail.ReadWrite", "MailboxSettings.Read"**.  
+It will add the following API Permissions: **"Mail.ReadWrite", "Mail.Send", "MailboxSettings.Read"**.  
 it will use a self-signed Certificate.  
 
 Once the app is created, it will expose the link to grant "Admin consent" for the permissions requested.  
@@ -37,7 +37,7 @@ Start-ExoGraphGui -ClientID "your app client ID" -TenantID "Your tenant ID" -Cer
 If you want to use Application permission flow, we have an option to save your "ClientID", "TenantID" and "ClientSecret", so you don't need to enter it every time as the example above.  
 you can run:  
 ```Powershell
-Import-ExoGraphGuiAADAppData -ClientID "your app client ID" -TenantID "Your tenant ID" -ClientSecret "your Secret passcode"
+Import-ExoGraphGuiAADAppData -ClientID "your app client ID" -TenantID "Your tenant ID" [-ClientSecret "your Secret passcode"] [-CertificateThumbprint "your certificate's thumbprint"]
 ```
 
 Now everytime you want to run the module, just run `Start-ExoGraphGui` and will fetch these saved details (so it will follow the Application permissions flow).  
