@@ -5,15 +5,16 @@
     
     .DESCRIPTION
     Method to delete a specific folder in the user mailbox with 3 different deletion methods.
-    
-    .PARAMETER ClientID
-    String parameter with the ClientID (or AppId) of your AzureAD Registered App.
+    Module required: Microsoft.Graph.Mail
+    Scope needed:
+    Delegated: Mail.ReadWrite
+    Application: Mail.ReadWrite
 
-    .PARAMETER TenantID
-    String parameter with the TenantID your AzureAD tenant.
+    .PARAMETER Account
+    User's UPN to delete mail folder from.
 
-    .PARAMETER ClientSecret
-    String parameter with the Client Secret which is configured in the AzureAD App.
+    .PARAMETER FolderId
+    FolderId of the folder to be deleted.
 
     .EXAMPLE
     PS C:\> Method8
@@ -22,23 +23,17 @@
     #>
     [CmdletBinding()]
     param(
-        [String] $ClientID,
+        [String] $Account,
 
-        [String] $TenantID,
-
-        [String] $ClientSecret
+        [String] $FolderId
     )
     $statusBarLabel.Text = "Running..."
 
-    Test-StopWatch -Service $service -ClientID $ClientID -TenantID $TenantID -ClientSecret $ClientSecret
-
-    if ( $txtBoxFolderID.Text -ne "" )
+    if ( $FolderId -ne "" )
     {
-        $sourceFolderId = new-object Microsoft.Exchange.WebServices.Data.FolderId($txtBoxFolderID.Text)
-        $SourceFolder = [Microsoft.Exchange.WebServices.Data.Folder]::Bind($service,$sourceFolderId)
-        $sourceFolder.Delete($ComboOption)
+        Remove-MgUserMailFolder -UserId $Account -MailFolderId $FolderId
 
-        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 8" -Target $email
+        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 8" -Target $Account
         $statusBarLabel.text = "Ready..."
         $PremiseForm.Refresh()
     }

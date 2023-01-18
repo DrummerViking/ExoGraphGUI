@@ -29,7 +29,7 @@
 		@{ ModuleName='PSFramework'; ModuleVersion='1.7.249' }
 		#@{ ModuleName='MSAL.PS'; ModuleVersion='4.37.0.0' }
 		'Microsoft.Graph.Authentication'
-		'Microsoft.Graph.Calendar'
+		#'Microsoft.Graph.Calendar'
 		'Microsoft.Graph.Mail'
 		'Microsoft.Graph.Users'
 	)

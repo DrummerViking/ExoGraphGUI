@@ -2,18 +2,16 @@
     <#
     .SYNOPSIS
     Method to get user's Inbox Rules.
+    Module required: Microsoft.Graph.Mail
+    Scope needed:
+    Delegated: MailboxSettings.Read
+    Application: MailboxSettings.Read
     
     .DESCRIPTION
     Method to get user's Inbox Rules.
     
-    .PARAMETER ClientID
-    String parameter with the ClientID (or AppId) of your AzureAD Registered App.
-
-    .PARAMETER TenantID
-    String parameter with the TenantID your AzureAD tenant.
-
-    .PARAMETER ClientSecret
-    String parameter with the Client Secret which is configured in the AzureAD App.
+    .PARAMETER Account
+    User's UPN to get mail folders from.
     
     .EXAMPLE
     PS C:\> Method9
@@ -22,28 +20,14 @@
     #>
     [CmdletBinding()]
     param(
-        [String] $ClientID,
-
-        [String] $TenantID,
-
-        [String] $ClientSecret
+        [String] $Account
     )
     $statusBarLabel.Text = "Running..."
 
-    Test-StopWatch -Service $service -ClientID $ClientID -TenantID $TenantID -ClientSecret $ClientSecret
-
-    $txtBoxResults.Text = "This method is still under construction."
-    $dgResults.Visible = $False
-    $txtBoxResults.Visible = $True
-    $PremiseForm.refresh()
-    $statusBarLabel.text = "Ready..."
-    
-    <#
-    $rules = $service.GetInboxRules()
     $array = New-Object System.Collections.ArrayList
-    foreach ( $rule in $rules )
-    {
-        $output = $rule | select DisplayName, Conditions, Actions, Exceptions
+    $rules = Get-MgUserMailFolderMessageRule -UserId $Account -MailFolderId "Inbox"
+    foreach ( $rule in $rules ) {
+        $output = $rule | Select-Object DisplayName, HasError, IsEnabled, IsReadOnly, Sequence
         $array.Add($output)
     }
     $dgResults.datasource = $array
@@ -52,6 +36,5 @@
     $txtBoxResults.Visible = $False
     $PremiseForm.refresh()
     $statusBarLabel.text = "Ready..."
-    Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 9" -Target $email
-    #>
+    Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 9" -Target $Account
 }

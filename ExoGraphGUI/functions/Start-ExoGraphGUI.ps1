@@ -55,10 +55,10 @@
 
         [String] $TenantID,
 
-        [Parameter(ParameterSetName="Certificate")]
+        #[Parameter(ParameterSetName="Certificate")]
         [String] $CertificateThumbprint,
 
-        [Parameter(ParameterSetName="ClientSecret")]
+        #[Parameter(ParameterSetName="ClientSecret")]
         [String] $ClientSecret
     )
     $script:nl = "`r`n"
@@ -101,11 +101,12 @@
         #endregion Generated Form Objects
 
         # Connecting to EWS and creating service object
-        $service = Connect-ExoGraphGuiService -ClientID $ClientID -TenantID $TenantID -ClientSecret $ClientSecret -CertificateThumbprint $CertificateThumbprint
+        $service = Connect-ExoGraphGuiService -ClientID $ClientID -TenantID $TenantID -CertificateThumbprint $CertificateThumbprint
         $Account = $service.Account
         if (-not($service.Account)) {
             $Account = [Microsoft.VisualBasic.Interaction]::InputBox("Enter user's UPN to work with", "ExoGraphGUI", "")
         }
+
         $ExpandFilters = {
             # Removing all controls, in order to reload the screen appropiately for each selection
             $PremiseForm.Controls.RemoveByKey("FromDate")
@@ -126,21 +127,21 @@
             $PremiseForm.Controls.RemoveByKey("comboBoxConfig")
 
             $labFromDate = New-Object System.Windows.Forms.Label
-            $FromDatePicker = New-Object System.Windows.Forms.DateTimePicker
+            $global:FromDatePicker = New-Object System.Windows.Forms.DateTimePicker
             $labToDate = New-Object System.Windows.Forms.Label
-            $ToDatePicker = New-Object System.Windows.Forms.DateTimePicker
+            $global:ToDatePicker = New-Object System.Windows.Forms.DateTimePicker
             $labSubject = New-Object System.Windows.Forms.Label
-            $txtBoxSubject = New-Object System.Windows.Forms.TextBox
+            $global:txtBoxSubject = New-Object System.Windows.Forms.TextBox
             $labFolderID = New-Object System.Windows.Forms.Label
-            $txtBoxFolderID = New-Object System.Windows.Forms.TextBox
+            $global:txtBoxFolderID = New-Object System.Windows.Forms.TextBox
             $labTargetFolderID = New-Object System.Windows.Forms.Label
-            $txtBoxTargetFolderID = New-Object System.Windows.Forms.TextBox
+            $global:txtBoxTargetFolderID = New-Object System.Windows.Forms.TextBox
             $labelCombobox = New-Object System.Windows.Forms.Label
-            $comboBoxMenu = New-Object System.Windows.Forms.ComboBox
+            $global:comboBoxMenu = New-Object System.Windows.Forms.ComboBox
             $labelComboboxFolder = New-Object System.Windows.Forms.Label
-            $comboBoxFolder = New-Object System.Windows.Forms.ComboBox
+            $global:comboBoxFolder = New-Object System.Windows.Forms.ComboBox
             $labelComboboxConfig = New-Object System.Windows.Forms.Label
-            $comboBoxConfig = New-Object System.Windows.Forms.ComboBox
+            $global:comboBoxConfig = New-Object System.Windows.Forms.ComboBox
 
             #Label FromDate
             $labFromDate.Location = New-Object System.Drawing.Point(5, 285)
@@ -296,14 +297,8 @@
                 $PremiseForm.Controls.Add($txtBoxFolderID)
             }
             elseif ($radiobutton8.Checked) {
-                $comboBoxMenu.Items.Add("") | Out-Null
-                $comboBoxMenu.Items.Add("HardDelete") | Out-Null
-                $comboBoxMenu.Items.Add("MoveToDeletedItems") | Out-Null
-                $comboBoxMenu.SelectedItem = "MoveToDeletedItems"
                 $PremiseForm.Controls.Add($labFolderID)
                 $PremiseForm.Controls.Add($txtBoxFolderID)
-                $PremiseForm.Controls.Add($labelCombobox)
-                $PremiseForm.Controls.Add($comboBoxMenu)
             }
             elseif ($radiobutton11.Checked) {
                 $PremiseForm.Controls.Add($labFromDate)
@@ -609,22 +604,22 @@
         $buttonGo.Text = "Go"
         $buttonGo.UseVisualStyleBackColor = $True
         $buttonGo.add_Click({
-                if ($radiobutton1.Checked) { Method1to5 }
+                if ($radiobutton1.Checked) { Method1to5 -Account $Account}
                 elseif ($radiobutton2.Checked) { Method1to5 }
                 elseif ($radiobutton3.Checked) { Method1to5 }
-                elseif ($radiobutton4.Checked) { Method1to5 }
+                elseif ($radiobutton4.Checked) { Method1to5 -Account $Account }
                 elseif ($radiobutton5.Checked) { Method1to5 }
-                elseif ($radiobutton6.Checked) { write-host "textbox value $($txtBoxFolderID.Text)" ; Method6 -FolderId $txtBoxFolderID.Text -StartDate $FromDatePicker.Value -EndDate $ToDatePicker.Value -MsgSubject $txtBoxSubject.Text }
-                elseif ($radiobutton7.Checked) { Method7 }
-                elseif ($radiobutton8.Checked) { Method8 }
-                elseif ($radiobutton9.Checked) { Method9 }
-                elseif ($radiobutton10.Checked) { Method10 }
+                elseif ($radiobutton6.Checked) { Method6 -Account $Account -FolderId $txtBoxFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
+                elseif ($radiobutton7.Checked) { Method7 -Account $Account -DisplayName $txtBoxFolderID.Text }
+                elseif ($radiobutton8.Checked) { Method8 -Account $Account -Folderid $txtBoxFolderID.Text }
+                elseif ($radiobutton9.Checked) { Method9 -Account $Account }
+                elseif ($radiobutton10.Checked) { Method10 -Account $Account }
                 elseif ($radiobutton11.Checked) { Method11 }
                 elseif ($radiobutton12.Checked) { Method12 }
                 elseif ($radiobutton13.Checked) { Method13 }
                 elseif ($radiobutton14.Checked) { Method14 }
                 elseif ($radiobutton15.Checked) { Method15 }
-                elseif ($radiobutton16.Checked) { Method16 }
+                elseif ($radiobutton16.Checked) { $Account = Method16 -Account $txtBoxFolderID.Text }
             })
 
         #"Exit" button

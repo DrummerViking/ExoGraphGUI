@@ -30,8 +30,8 @@
 
     DynamicParam {
         $modules = Get-Module Microsoft.Graph.Authentication
-        $latest = $modules | Sort-Object version -Descending -Top 1
-        if ($latest.Version -ge [version]"2.0.0") {
+        $latest = $modules | Sort-Object version -Descending
+        if ($latest[0].Version -ge [version]"2.0.0") {
             $Attribute = New-Object System.Management.Automation.ParameterAttribute
             $Attribute.Mandatory = $false
             $Attribute.HelpMessage = "String parameter with the Client Secret which is configured in the AzureAD App."
@@ -55,8 +55,10 @@
     Process {
         # Connect to Graph if there is no current context
         $conn = Get-MgContext
-        if ( $null -eq $conn -or $conn.Scopes -notcontains "Calendars.Read" ) {
-            Write-PSFMessage -Level Host -Message "There is currently no active connection to MgGraph or current connection is missing required scopes."
+        $requiredScopes = "Mail.ReadBasic", "Mail.ReadWrite", "MailboxSettings.Read"
+        $compare = Compare-Object -ReferenceObject $conn.scopes -DifferenceObject $requiredScopes -IncludeEqual
+        if ( $null -eq $conn -or $compare.sideindicator -contains "=>" ) {
+            Write-PSFMessage -Level Host -Message "There is currently no active connection to MgGraph or current connection is missing required scopes: $($requiredScopes -join ", ")"
             # Connecting to graph using Azure App Application flow
             if ( $clientID -ne '' -and $TenantID -ne '' -and ($CertificateThumbprint -ne '' -or $ClientSecret -ne '')) {
                 Write-PSFMessage -Level Host -Message "Connecting to graph with Azure AppId: $ClientID"
@@ -71,7 +73,7 @@
             else {
                 # Connecting to graph with the user account
                 Write-PSFMessage -Level Host -Message "Connecting to graph with the user account"
-                Connect-MgGraph -Scopes "Mail.ReadBasic"
+                Connect-MgGraph -Scopes $requiredScopes
             }
             $conn = Get-MgContext
         }

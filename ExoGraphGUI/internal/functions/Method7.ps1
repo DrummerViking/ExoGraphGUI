@@ -5,16 +5,17 @@
     
     .DESCRIPTION
     Method to create a custom folder in mailbox's Root.
+    Module required: Microsoft.Graph.Mail
+    Scope needed:
+    Delegated: Mail.ReadWrite
+    Application: Mail.ReadWrite
     
-    .PARAMETER ClientID
-    String parameter with the ClientID (or AppId) of your AzureAD Registered App.
+    .PARAMETER Account
+    User's UPN to create mail folder to.
 
-    .PARAMETER TenantID
-    String parameter with the TenantID your AzureAD tenant.
+    .PARAMETER DisplayName
+    DisplayName of the folder to be created.
 
-    .PARAMETER ClientSecret
-    String parameter with the Client Secret which is configured in the AzureAD App.
-    
     .EXAMPLE
     PS C:\> Method7
     Method to create a custom folder in mailbox's Root.
@@ -22,29 +23,27 @@
     #>
     [CmdletBinding()]
     param(
-        [String] $ClientID,
-
-        [String] $TenantID,
-
-        [String] $ClientSecret
+        [String] $Account,
+        [String] $DisplayName
     )
     
-    if ( $txtBoxFolderID.Text -ne "" )
+    if ( $DisplayName -ne "" )
     {
         $statusBarLabel.text = "Running..."
-        Test-StopWatch -Service $service -ClientID $ClientID -TenantID $TenantID -ClientSecret $ClientSecret
+ 
+        $params = @{
+            DisplayName = $DisplayName
+            IsHidden = $false
+        }
+        New-MgUserMailFolder -UserId $Account -BodyParameter $params
 
-        $folder = new-object Microsoft.Exchange.WebServices.Data.Folder($service)
-        $folder.DisplayName = $txtBoxFolderID.Text
-        $folder.Save([Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::MsgFolderRoot)
-
-        Write-PSFMessage -Level Host -Message "Task finished succesfully. Folder Created: $($txtBoxFolderID.Text)" -FunctionName "Method 7" -Target $email
+        Write-PSFMessage -Level Host -Message "Task finished succesfully. Folder Created: $DisplayName" -FunctionName "Method 7" -Target $Account
         $statusBarLabel.text = "Ready..."
         $PremiseForm.Refresh()
     }
     else
     {
         [Microsoft.VisualBasic.Interaction]::MsgBox("FolderID textbox is empty. Check and try again",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
-        $statusBarLabel.text = "Method 8 finished with warnings/errors"
+        $statusBarLabel.text = "Method 7 finished with warnings/errors"
     }
 }

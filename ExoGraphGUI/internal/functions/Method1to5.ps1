@@ -10,6 +10,9 @@
     Delegated: Mail.ReadBasic
     Application: Mail.ReadBasic.All
     
+    .PARAMETER Account
+    User's UPN to get mail folders from.
+
     .EXAMPLE
     PS C:\> Method1to5
     lists folders in the user mailbox.
@@ -18,12 +21,14 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     [CmdletBinding()]
     param(
-        # Parameters
+        $Account
     )
     $statusBarLabel.Text = "Running..."
 
     Function Find-Subfolders {
         Param (
+            $Account,
+
             $array,
 
             $ParentFolderId,
@@ -35,7 +40,7 @@
             $line = $folder | Select-Object @{N="FolderPath";E={$folderpath}},ChildFolderCount,TotalItemCount,UnreadItemCount,Id
             $null = $array.add($line)
             if ( $folder.ChildFolderCount -gt 0 ) {
-                Find-Subfolders -ParentFolderId $folder.id -Array $array -ParentDisplayname "$folderpath\"
+                Find-Subfolders -Account $Account -ParentFolderId $folder.id -Array $array -ParentDisplayname "$folderpath\"
             }
         }
     }
@@ -43,13 +48,13 @@
     #listing all available folders in the mailbox
     $array = New-Object System.Collections.ArrayList
     if ($radiobutton1.Checked) {
-        $parentFolders = (Get-MgUserMailFolder -UserId $Account -MailFolderId "msgfolderroot").Id
+        $parentFolders = (Get-MgUserMailFolder -UserId $Account -MailFolderId "msgfolderRoot").Id
     }
     elseif ($radiobutton4.Checked) {
         $deletions = Get-MgUserMailFolder -UserId $Account -MailFolderId "recoverableitemsdeletions"
         $parentFolders = $deletions.ParentFolderId
     }
-    Find-Subfolders -ParentFolderId $parentFolders -Array $array -ParentDisplayname "\"
+    Find-Subfolders -Account $Account -ParentFolderId $parentFolders -Array $array -ParentDisplayname "\"
     
     $dgResults.datasource = $array
     $dgResults.AutoResizeColumns()
@@ -57,5 +62,5 @@
     $txtBoxResults.Visible = $False
     $PremiseForm.refresh()
     $statusBarLabel.Text = "Ready. Folders found: $($array.Count)"
-    Write-PSFMessage -Level Output -Message "Task finished succesfully" -FunctionName "Method 1-5" -Target $email
+    Write-PSFMessage -Level Output -Message "Task finished succesfully" -FunctionName "Method 1-5" -Target $Account
 }

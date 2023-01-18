@@ -9,9 +9,12 @@
     Scope needed:
     Delegated: Mail.ReadBasic
     Application: Mail.ReadBasic.All
+
+    .PARAMETER Account
+    User's UPN to get mail messages from.
     
     .PARAMETER folderID
-    FolderID value.
+    FolderID value to get mail messages from.
     
     .PARAMETER StartDate
     StartDate to search for items.
@@ -30,6 +33,7 @@
     #>
     [CmdletBinding()]
     Param(
+        [String] $Account,
         [String] $folderID,
         [string] $StartDate,
         [string] $EndDate,
@@ -38,27 +42,26 @@
     $statusBarLabel.Text = "Running..."
     
     if ( $folderID -ne "" ) {
-        Write-PSFMessage -level host -message "current folderID: $folderID, $startdate and $enddate"
         # Creating Filter variables
-        $filter = "ReceivedDateTime ge $StartDate and receivedDateTime lt $EndDate"
+        $filter = $null
         if ($MsgSubject -ne "") {
-            $filter += " and Subject -eq '$MsgSubject'"
+            $filter = "Subject eq '$MsgSubject'"
         }
         
         $array = New-Object System.Collections.ArrayList
-        $msgs = Get-MgUserMailFolderMessage -UserId $Account -MailFolderId $folderID -Filter $filter | Select-Object subject, @{N = "Sender"; E = { $_.Sender.EmailAddress.Address } }, ReceivedDateTime, isRead
-        $null = $array.AddRange($msgs)
-
+        $msgs = Get-MgUserMailFolderMessage -UserId $Account -MailFolderId $folderID -Filter $filter -All | Where-Object {$_.ReceivedDateTime -ge $StartDate -and $_.ReceivedDateTime -lt $EndDate} | Select-Object subject, @{N = "Sender"; E = { $_.Sender.EmailAddress.Address } }, ReceivedDateTime, isRead
+        $null = $msgs | ForEach-Object { $array.Add($_) }
+        
         $dgResults.datasource = $array
         $dgResults.AutoResizeColumns()
         $dgResults.Visible = $True
         $txtBoxResults.Visible = $False
         $PremiseForm.refresh()
         $statusBarLabel.text = "Ready. Items found: $($array.Count)"
-        Write-PSFMessage -Level Output -Message "Task finished succesfully" -FunctionName "Method 6" -Target $email
+        Write-PSFMessage -Level Output -Message "Task finished succesfully" -FunctionName "Method 6" -Target $Account
     }
     else {
         [Microsoft.VisualBasic.Interaction]::MsgBox("FolderID textbox is empty. Check and try again", [Microsoft.VisualBasic.MsgBoxStyle]::Okonly, "Information Message")
-        $statusBarLabel.text = "Process finished with warnings/errors"
+        $statusBarLabel.text = "Method 6 finished with warnings/errors"
     }
 }

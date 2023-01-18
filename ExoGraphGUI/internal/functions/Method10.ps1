@@ -2,18 +2,16 @@
     <#
     .SYNOPSIS
     Method to get user's OOF Settings.
-    
+    Module required: Microsoft.Graph.Authentication
+    Scope needed:
+    Delegated: MailboxSettings.Read
+    Application: MailboxSettings.Read
+
     .DESCRIPTION
     Method to get user's OOF Settings.
     
-    .PARAMETER ClientID
-    String parameter with the ClientID (or AppId) of your AzureAD Registered App.
-
-    .PARAMETER TenantID
-    String parameter with the TenantID your AzureAD tenant.
-
-    .PARAMETER ClientSecret
-    String parameter with the Client Secret which is configured in the AzureAD App.
+    .PARAMETER Account
+    User's UPN to get OOF settings from.
 
     .EXAMPLE
     PS C:\> Method10
@@ -22,25 +20,20 @@
     #>
     [CmdletBinding()]
     param(
-        [String] $ClientID,
-
-        [String] $TenantID,
-
-        [String] $ClientSecret
+        [String] $Account
     )
     $statusBarLabel.Text = "Running..."
 
-    Test-StopWatch -Service $service -ClientID $ClientID -TenantID $TenantID -ClientSecret $ClientSecret
+    $response = Invoke-MgGraphRequest -Method Get -Uri "https://graph.microsoft.com/v1.0/users/$Account/mailboxSettings/automaticRepliesSetting"
 
     $array = New-Object System.Collections.ArrayList
-    $output = $service.GetUserOofSettings($email) | Select-Object `
-        State, `
-        ExternalAudience, `
-        @{ Name = "StartTime" ; Expression = { $service.GetUserOofSettings($email).Duration.StartTime.ToString() } }, `
-        @{ Name = "EndTime" ; Expression = { $service.GetUserOofSettings($email).Duration.EndTime.ToString() } }, `
-        @{ Name = "InternalReply" ; Expression = { $service.GetUserOofSettings($email).InternalReply.Message } }, `
-        @{ Name = "ExternalReply" ; Expression = { $service.GetUserOofSettings($email).ExternalReply.Message } }, `
-        AllowExternalOof
+    $output = $response | Select-Object `
+        @{ Name = "Status" ; Expression = { $response["Status"] } }, `
+        @{ Name = "ExternalAudience" ; Expression = { $response["externalAudience"] } }, `
+        @{ Name = "StartTime" ; Expression = { $response["scheduledStartDateTime"].DateTime.ToString("yyyy/MM/dd HH:mm:ss") } }, `
+        @{ Name = "EndTime"   ; Expression = { $response["scheduledEndDateTime"].DateTime.ToString("yyyy/MM/dd HH:mm:ss") } }, `
+        @{ Name = "InternalReplyMessage" ; Expression = { $response["InternalReplyMessage"] } }, `
+        @{ Name = "ExternalReplyMessage" ; Expression = { $response["ExternalReplyMessage"] } }
     $array.Add($output)
 
     $dgResults.datasource = $array
@@ -49,5 +42,5 @@
     $txtBoxResults.Visible = $False
     $PremiseForm.refresh()
     $statusBarLabel.text = "Ready..."
-    Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 10" -Target $email
+    Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 10" -Target $Account
 }
