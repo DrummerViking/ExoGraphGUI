@@ -1,4 +1,4 @@
-﻿Function Method1to5 {
+﻿Function Method1 {
     <#
     .SYNOPSIS
     Method to list folders in the user mailbox.
@@ -14,7 +14,7 @@
     User's UPN to get mail folders from.
 
     .EXAMPLE
-    PS C:\> Method1to5
+    PS C:\> Method1
     lists folders in the user mailbox.
 
     #>
@@ -50,7 +50,7 @@
     if ($radiobutton1.Checked) {
         $parentFolders = (Get-MgUserMailFolder -UserId $Account -MailFolderId "msgfolderRoot").Id
     }
-    elseif ($radiobutton4.Checked) {
+    elseif ($radiobutton2.Checked) {
         $deletions = Get-MgUserMailFolder -UserId $Account -MailFolderId "recoverableitemsdeletions"
         $parentFolders = $deletions.ParentFolderId
     }
@@ -62,5 +62,5 @@
     $txtBoxResults.Visible = $False
     $PremiseForm.refresh()
     $statusBarLabel.Text = "Ready. Folders found: $($array.Count)"
-    Write-PSFMessage -Level Output -Message "Task finished succesfully" -FunctionName "Method 1-5" -Target $Account
+    Write-PSFMessage -Level Output -Message "Task finished succesfully" -FunctionName "Method 1 & 2" -Target $Account
 }

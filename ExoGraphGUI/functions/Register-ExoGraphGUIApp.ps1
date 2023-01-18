@@ -16,8 +16,11 @@
     .PARAMETER TenantId
     Optional parameter to set the TenantID GUID.
 
-    .PARAMETER StayConnected
-    Use this optional parameter to not disconnect from Graph after the Function execution.
+    .PARAMETER CertPath
+    The file path to your .CER public key file. If this parameter is ommitted, and the "UseClientSecret" is not used, we will be creating a new self-signed certificate (with a validity period of 1 year) for the app.
+
+    .PARAMETER UseClientSecret
+    Use this optional parameter, to configure a ClientSecret (with a validity period of 1 year) instead of a certificate.
 
     .PARAMETER ImportAppDataToModule
     Use this optional parameter to import your app's ClientId, TenantId and ClientSecret into the ExoGraphGUI module. In this way, the next time you run the app it will use the Application flow to authenticate with these values.
@@ -46,8 +49,12 @@
         $TenantId,
 
         [Parameter(Mandatory = $false)]
+        [String]
+        $CertPath,
+
+        [Parameter(Mandatory = $false)]
         [Switch]
-        $StayConnected,
+        $UseClientSecret,
     
         [Parameter(Mandatory = $false)]
         [Switch]
@@ -61,12 +68,19 @@
     Import-Module "Microsoft.Graph.Applications"
 
     # Graph permissions variables
-    $graphResourceId = "00000002-0000-0ff1-ce00-000000000000"
-    $EwsApiPermission = @{
-        Id   = "dc890d15-9560-4a4c-9b7f-a736ec74ec40" # "full_access_as_app"
-        Type = "Role"
+    #$graphResourceId = "00000002-0000-0ff1-ce00-000000000000"
+    $graphResourceId = "00000003-0000-0000-c000-000000000000"
+    
+    $scopesArray = New-Object System.Collections.ArrayList
+    @("Mail.ReadWrite", "Mail.Send", "MailboxSettings.Read") | ForEach-Object {
+        New-Variable perm -Value @{
+            Id   = (Find-MgGraphPermission -SearchString $_ -PermissionType Application -ExactMatch).id 
+            Type = "Role"
+        }
+        $null = $scopesArray.add($perm)
+        remove-variable perm
     }
-
+    
     # Requires an admin
     Write-PSFMessage -Level Important -Message "Connecting to MgGraph"
     if ($TenantId) {
@@ -79,20 +93,50 @@
     # Get context for access to tenant ID
     $context = Get-MgContext
 
-    # Create app registration
-    $appRegistration = New-MgApplication -DisplayName $AppName -SignInAudience "AzureADMyOrg" `
-        -Web @{ RedirectUris = "http://localhost"; } `
-        -RequiredResourceAccess @{ ResourceAppId = $graphResourceId; ResourceAccess = @($EwsApiPermission) } `
-        -AdditionalProperties @{}
-
-    $appObjId = Get-MgApplication -Filter "AppId eq '$($appRegistration.Appid)'"
-    $passwordCred = @{
-        displayName = 'Secret created in PowerShell'
-        endDateTime = (Get-Date).Addyears(1)
+    
+    # Load cert
+    if ( $CertPath ) {
+        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($CertPath)
+        Write-PSFMessage -Level Host -Message "Certificate loaded from Path '$CertPath'."
     }
-    $secret = Add-MgApplicationPassword -applicationId $appObjId.Id -PasswordCredential $passwordCred
-    Write-PSFMessage -Level Important -Message "App registration created with app ID $($appRegistration.AppId) and clientSecret: $($secret.SecretText)"
-    Write-PSFMessage -Level Important -Message "Please take note of your client secret as it will not be shown anymore"
+    elseif ( -not($UseClientSecret) ) {
+        # Create certificate
+        $docsPath = [Environment]::GetFolderPath("myDocuments")
+        $mycert = New-SelfSignedCertificate -DnsName $context.Account.Split("@")[1] -CertStoreLocation "cert:\CurrentUser\My" -NotAfter (Get-Date).AddYears(1) -KeySpec KeyExchange
+
+        # Export certificate to .pfx file
+        $mycert | Export-PfxCertificate -FilePath "$docsPath\exographgui_cert.pfx" -Password (ConvertTo-SecureString -String "LS1setup!" -AsPlainText -Force ) -Force
+
+        # Export certificate to .cer file
+        $mycert | Export-Certificate -FilePath "$docsPath\exographgui_mycert.cer" -Force
+        $cerPath = Get-ChildItem -Path "$docsPath\exographgui_mycert.cer"
+        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($cerPath.FullName)
+        Write-PSFMessage -Level Host -Message "Certificate created in Path '$($cerPath.FullName)'."
+    }
+
+    # Create app registration
+    if ( -not($UseClientSecret) ) {
+        $appRegistration = New-MgApplication -DisplayName $AppName -SignInAudience "AzureADMyOrg" `
+            -Web @{ RedirectUris = "http://localhost"; } `
+            -RequiredResourceAccess @{ ResourceAppId = $graphResourceId; ResourceAccess = $scopesArray.ToArray() } `
+            -AdditionalProperties @{} -KeyCredentials @(@{ Type = "AsymmetricX509Cert"; Usage = "Verify"; Key = $cert.RawData })
+    }
+    else {
+        $appRegistration = New-MgApplication -DisplayName $AppName -SignInAudience "AzureADMyOrg" `
+            -Web @{ RedirectUris = "http://localhost"; } `
+            -RequiredResourceAccess @{ ResourceAppId = $graphResourceId; ResourceAccess = $scopesArray.ToArray() } `
+            -AdditionalProperties @{}
+
+        $appObjId = Get-MgApplication -Filter "AppId eq '$($appRegistration.Appid)'"
+        $passwordCred = @{
+            displayName = 'Secret created in PowerShell'
+            endDateTime = (Get-Date).Addyears(1)
+        }
+        $secret = Add-MgApplicationPassword -applicationId $appObjId.Id -PasswordCredential $passwordCred
+        Write-PSFMessage -Level Important -Message "Please take note of your client secret as it will not be shown anymore"
+    }
+    Write-PSFMessage -Level Important -Message "App registration created with app ID $($appRegistration.AppId)" -ForegroundColor Cyan
+    
     # Create corresponding service principal
     New-MgServicePrincipal -AppId $appRegistration.AppId -AdditionalProperties @{} | Out-Null
     Write-PSFMessage -Level Important -Message "Service principal created"
@@ -100,18 +144,10 @@
 
     # Generate admin consent URL
     $adminConsentUrl = "https://login.microsoftonline.com/" + $context.TenantId + "/adminconsent?client_id=" + $appRegistration.AppId
-    Write-PSFHostColor "[$(Get-Date -Format "HH:MM:ss")] Please go to the following URL in your browser to provide admin consent" -DefaultColor Yellow
+    Write-PSFMessage -Level Important -Message "Please go to the following URL in your browser to provide admin consent:"
     Write-PSFMessage -Level Important -Message "$adminConsentUrl"
 
     if ( $ImportAppDataToModule ) {
         Import-ExoGraphGUIAADAppData -ClientID $appRegistration.AppId -TenantID $context.TenantId -ClientSecret $secret.SecretText
-    }
-
-    if ($StayConnected -eq $false) {
-        $null = Disconnect-MgGraph
-        Write-PSFMessage -Level Important -Message "Disconnected from Microsoft Graph"
-    }
-    else {
-        Write-PSFHostColor "[$(Get-Date -Format "HH:MM:ss")] The connection to Microsoft Graph is still active. To disconnect, use Disconnect-MgGraph" -DefaultColor Yellow
     }
 }

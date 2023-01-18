@@ -12,6 +12,9 @@
     .PARAMETER TenantID
     String parameter with the TenantID your AzureAD tenant.
 
+    .PARAMETER CertificateThumbprint
+    String parameter with the certificate's thumbprint associated to your AzureAD App registration.
+
     .PARAMETER ClientSecret
     String parameter with the Client Secret which is configured in the AzureAD App.
     
@@ -28,13 +31,17 @@
         [Parameter(Mandatory = $true)]
         [String] $TenantID,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false, ParameterSetName = "Certificate")]
+        $CertificateThumbprint,
+
+        [Parameter(Mandatory = $false, ParameterSetName = "ClientSecret")]
         [String] $ClientSecret
     )
 
     begin {
-        if ( $ClientID -eq '' -or $TenantID -eq '' -or $CertificateThumbprint -eq '' ) {
-            throw "Either ClientID, TenantID or ClientSecret are null or empty."
+
+        if ( $ClientID -eq '' -or $TenantID -eq '' -or $CertificateThumbprint -eq '' -or $ClientSecret -eq '') {
+            throw "Either ClientID, TenantID or CertificateThumbprint/ClientSecret are null or empty."
         }
     }
 
@@ -45,11 +52,13 @@
         Write-PSFMessage -Level Important -Message "Importing TenantID string to ExoGraphGUI Module."
         Set-PSFConfig -Module ExoGraphGUI -Name "TenantID" -Value $TenantID -Description "TenantID where your Azure App is registered." -AllowDelete -PassThru | Register-PSFConfig
         
-        Write-PSFMessage -Level Important -Message "Importing ClientSecret string to ExoGraphGUI Module."
-        Set-PSFConfig -Module ExoGraphGUI -Name "ClientSecret" -Value $clientSecret -Description "ClientSecret passcode for your Azure App" -AllowDelete -PassThru | Register-PSFConfig
-    }
-
-    end {
-
+        if ( $PSBoundParameters.ContainsKey("CertificateThumbprint") ) {
+                Write-PSFMessage -Level Important -Message "Importing CertificateThumbprint string to ExoGraphGUI Module."
+                Set-PSFConfig -Module ExoGraphGUI -Name "CertificateThumbprint" -Value $CertificateThumbprint -Description "CertificateThumbprint for your Azure App" -AllowDelete -PassThru | Register-PSFConfig
+            }
+        elseif ($PSBoundParameters.ContainsKey("ClientSecret") ) {
+            Write-PSFMessage -Level Important -Message "Importing ClientSecret string to ExoGraphGUI Module."
+            Set-PSFConfig -Module ExoGraphGUI -Name "ClientSecret" -Value $ClientSecret -Description "ClientSecret passcode for your Azure App" -AllowDelete -PassThru | Register-PSFConfig
+        }
     }
 }

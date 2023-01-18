@@ -9,7 +9,7 @@ This tool will connect using Oauth to connect to Exchange Online. If "Modern Aut
 
  > This Module requires Powershell 5.1 and above. It should work fine in PS7 and PS5.1.  
  > This Module will install different Microsoft.Graph.* modules, in order to use graph to connect to Exchange Online.  
- > Graph scopes required: "Mail.ReadWrite", "MailboxSettings.Read"  
+ > Graph scopes required: "Mail.ReadWrite", "Mail.Send", "MailboxSettings.Read"  
  
 ## Installation
 
@@ -38,23 +38,19 @@ Please check on the following page for more details and options to configure you
 [Authentication Options](/docs/AuthenticationOptions.md)  
 
 ## Module features:
-### Allows to perform 16 different operations using EWS API:
+### Allows to perform 11 different operations using EWS API:
 - Option 1 : List Folders in Root
-- Option 2 : List Folders in Archive Root
-- Option 3 : List Folders in Public Folder Root
-- Option 4 : List folders in Recoverable Items Root folder
-- Option 5 : List folders in Recoverable Items folder in Archive
-- Option 6 : List Items in a desired Folder
-- Option 7 : Create a custom Folder in Root
-- Option 8 : Delete a Folder
-- Option 9 : Get user's Inbox Rules
-- Option 10 : Get user's OOF Settings
-- Option 11 : Move items between folders
-- Option 12 : Delete a subset of items in a folder
-- Option 13 : Get user's Delegate information
-- Option 14 : Change sensitivity to items in a folder
-- Option 15 : Remove OWA configurations
-- Option 16 : Switch to another Mailbox
+- Option 2 : List folders in Recoverable Items Root folder
+- Option 3 : List Items in a desired Folder
+- Option 4 : Create a custom Folder in Root
+- Option 5 : Delete a Folder
+- Option 6 : Get user's Inbox Rules
+- Option 7 : Get user's OOF Settings
+- Option 8 : Move items between folders
+- Option 9 : Delete a subset of items in a folder
+- Option 10 : Get user's Delegate information
+- Option 11 : Send Mail message
+- Option 12 : Switch to another Mailbox
 
 ## Module logging
 

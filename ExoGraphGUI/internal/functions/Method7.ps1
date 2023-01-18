@@ -1,49 +1,46 @@
 ﻿Function Method7 {
     <#
     .SYNOPSIS
-    Method to create a custom folder in mailbox's Root.
-    
-    .DESCRIPTION
-    Method to create a custom folder in mailbox's Root.
-    Module required: Microsoft.Graph.Mail
+    Method to get user's OOF Settings.
+    Module required: Microsoft.Graph.Authentication
     Scope needed:
-    Delegated: Mail.ReadWrite
-    Application: Mail.ReadWrite
+    Delegated: MailboxSettings.Read
+    Application: MailboxSettings.Read
+
+    .DESCRIPTION
+    Method to get user's OOF Settings.
     
     .PARAMETER Account
-    User's UPN to create mail folder to.
-
-    .PARAMETER DisplayName
-    DisplayName of the folder to be created.
+    User's UPN to get OOF settings from.
 
     .EXAMPLE
     PS C:\> Method7
-    Method to create a custom folder in mailbox's Root.
+    Method to get user's OOF Settings.
 
     #>
     [CmdletBinding()]
     param(
-        [String] $Account,
-        [String] $DisplayName
+        [String] $Account
     )
-    
-    if ( $DisplayName -ne "" )
-    {
-        $statusBarLabel.text = "Running..."
- 
-        $params = @{
-            DisplayName = $DisplayName
-            IsHidden = $false
-        }
-        New-MgUserMailFolder -UserId $Account -BodyParameter $params
+    $statusBarLabel.Text = "Running..."
 
-        Write-PSFMessage -Level Host -Message "Task finished succesfully. Folder Created: $DisplayName" -FunctionName "Method 7" -Target $Account
-        $statusBarLabel.text = "Ready..."
-        $PremiseForm.Refresh()
-    }
-    else
-    {
-        [Microsoft.VisualBasic.Interaction]::MsgBox("FolderID textbox is empty. Check and try again",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
-        $statusBarLabel.text = "Method 7 finished with warnings/errors"
-    }
+    $response = Invoke-MgGraphRequest -Method Get -Uri "https://graph.microsoft.com/v1.0/users/$Account/mailboxSettings/automaticRepliesSetting"
+
+    $array = New-Object System.Collections.ArrayList
+    $output = $response | Select-Object `
+        @{ Name = "Status" ; Expression = { $response["Status"] } }, `
+        @{ Name = "ExternalAudience" ; Expression = { $response["externalAudience"] } }, `
+        @{ Name = "StartTime" ; Expression = { $response["scheduledStartDateTime"].DateTime.ToString("yyyy/MM/dd HH:mm:ss") } }, `
+        @{ Name = "EndTime"   ; Expression = { $response["scheduledEndDateTime"].DateTime.ToString("yyyy/MM/dd HH:mm:ss") } }, `
+        @{ Name = "InternalReplyMessage" ; Expression = { $response["InternalReplyMessage"] } }, `
+        @{ Name = "ExternalReplyMessage" ; Expression = { $response["ExternalReplyMessage"] } }
+    $array.Add($output)
+
+    $dgResults.datasource = $array
+    $dgResults.AutoResizeColumns()
+    $dgResults.Visible = $True
+    $txtBoxResults.Visible = $False
+    $PremiseForm.refresh()
+    $statusBarLabel.text = "Ready..."
+    Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 7" -Target $Account
 }

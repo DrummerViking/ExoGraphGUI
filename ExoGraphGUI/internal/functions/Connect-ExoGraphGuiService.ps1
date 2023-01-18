@@ -55,7 +55,7 @@
     Process {
         # Connect to Graph if there is no current context
         $conn = Get-MgContext
-        $requiredScopes = "Mail.ReadWrite", "MailboxSettings.Read"
+        $requiredScopes = "Mail.ReadWrite", "Mail.Send", "MailboxSettings.Read"
         if ( $conn ) {
             $compare = Compare-Object -ReferenceObject $conn.scopes -DifferenceObject $requiredScopes -IncludeEqual
         }

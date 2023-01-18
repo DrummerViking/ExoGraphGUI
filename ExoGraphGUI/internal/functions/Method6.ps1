@@ -1,67 +1,40 @@
 ﻿Function Method6 {
     <#
     .SYNOPSIS
-    Method to list items in a specific folders in the user mailbox.
-    
-    .DESCRIPTION
-    Method to list items in a specific folders in the user mailbox.
+    Method to get user's Inbox Rules.
     Module required: Microsoft.Graph.Mail
     Scope needed:
-    Delegated: Mail.ReadBasic
-    Application: Mail.ReadBasic.All
-
+    Delegated: MailboxSettings.Read
+    Application: MailboxSettings.Read
+    
+    .DESCRIPTION
+    Method to get user's Inbox Rules.
+    
     .PARAMETER Account
-    User's UPN to get mail messages from.
-    
-    .PARAMETER folderID
-    FolderID value to get mail messages from.
-    
-    .PARAMETER StartDate
-    StartDate to search for items.
-    
-    .PARAMETER EndDate
-    EndDate to search for items.
-
-    .PARAMETER MsgSubject
-    Optional parameter to search based on a subject text.
+    User's UPN to get mail folders from.
     
     .EXAMPLE
     PS C:\> Method6
-    
-    Method to list items in a specific folders in the user mailbox.
+    Method to get user's Inbox Rules.
 
     #>
     [CmdletBinding()]
-    Param(
-        [String] $Account,
-        [String] $folderID,
-        [string] $StartDate,
-        [string] $EndDate,
-        [String] $MsgSubject
+    param(
+        [String] $Account
     )
     $statusBarLabel.Text = "Running..."
-    
-    if ( $folderID -ne "" ) {
-        # Creating Filter variables
-        $filter = $null
-        if ($MsgSubject -ne "") {
-            $filter = "Subject eq '$MsgSubject'"
-        }
-        
-        $array = New-Object System.Collections.ArrayList
-        $msgs = Get-MgUserMailFolderMessage -UserId $Account -MailFolderId $folderID -Filter $filter -All | Where-Object {$_.ReceivedDateTime -ge $StartDate -and $_.ReceivedDateTime -lt $EndDate} | Select-Object subject, @{N = "Sender"; E = { $_.Sender.EmailAddress.Address } }, ReceivedDateTime, isRead
-        $null = $msgs | ForEach-Object { $array.Add($_) }
-        
-        $dgResults.datasource = $array
-        $dgResults.AutoResizeColumns()
-        $dgResults.Visible = $True
-        $txtBoxResults.Visible = $False
-        $PremiseForm.refresh()
-        $statusBarLabel.text = "Ready. Items found: $($array.Count)"
-        Write-PSFMessage -Level Output -Message "Task finished succesfully" -FunctionName "Method 6" -Target $Account
+
+    $array = New-Object System.Collections.ArrayList
+    $rules = Get-MgUserMailFolderMessageRule -UserId $Account -MailFolderId "Inbox"
+    foreach ( $rule in $rules ) {
+        $output = $rule | Select-Object DisplayName, HasError, IsEnabled, IsReadOnly, Sequence
+        $array.Add($output)
     }
-    else {
-        [Microsoft.VisualBasic.Interaction]::MsgBox("FolderID textbox is empty. Check and try again", [Microsoft.VisualBasic.MsgBoxStyle]::Okonly, "Information Message")
-        $statusBarLabel.text = "Method 6 finished with warnings/errors"
-    }
+    $dgResults.datasource = $array
+    $dgResults.AutoResizeColumns()
+    $dgResults.Visible = $True
+    $txtBoxResults.Visible = $False
+    $PremiseForm.refresh()
+    $statusBarLabel.text = "Ready..."
+    Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 6" -Target $Account
 }

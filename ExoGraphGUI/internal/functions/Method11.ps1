@@ -1,80 +1,121 @@
-﻿Function Method11 {
+Function Method11 {
     <#
     .SYNOPSIS
-    Method to move items between folders.
+    Function to send email messages through MS Graph.
     
     .DESCRIPTION
-    Method to move items between folders by using FolderID values.
+    Function to send email messages through MS Graph.
     Module required: Microsoft.Graph.Users.Actions
     Scope needed:
-    Delegated: Mail.ReadWrite
-    Application: Mail.ReadWrite
+    Delegated: Mail.Send
+    Application: Mail.Send
 
-    .PARAMETER Account
-    User's UPN to get move messages from.
+    .PARAMETER ToRecipients
+    List of recipients in the "To" list. This is a Mandatory parameter.
     
-    .PARAMETER FolderID
-    FolderID value to get mail messages from.
+    .PARAMETER CCRecipients
+    List of recipients in the "CC" list. This is an optional parameter.
 
-    .PARAMETER TargetFolderID
-    FolderID value to move mail messages to.
-    
-    .PARAMETER StartDate
-    StartDate to search for items.
-    
-    .PARAMETER EndDate
-    EndDate to search for items.
+    .PARAMETER BccRecipients
+    List of recipients in the "Bcc" list. This is an optional parameter.
 
-    .PARAMETER MsgSubject
-    Optional parameter to search based on a subject text.
+    .PARAMETER Subject
+    Use this parameter to set the subject's text. By default will have: "Test message sent via Graph".
+
+    .PARAMETER Body
+    Use this parameter to set the body's text. By default will have: "Test message sent via Graph using Powershell".
     
     .EXAMPLE
-    PS C:\> Method11
+    PS C:\> Method11 -ToRecipients "john@contoso.com"
+    Then will send the email message to "john@contoso.com" from the user previously authenticated.
 
-    Moves items from source folder to target folder based on dates and/or subject filters.
-
-    #>
-    [CmdletBinding()]
-    Param(
+    .EXAMPLE
+    PS C:\> Method11 -ToRecipients "julia@contoso.com","carlos@contoso.com" -BccRecipients "mark@contoso.com" -Subject "Lets meet!"
+    Then will send the email message to "julia@contoso.com" and "carlos@contoso.com" and bcc to "mark@contoso.com", from the user previously authenticated.
+#>
+    [Cmdletbinding()]
+    Param (
         [String] $Account,
-        [String] $FolderID,
-        [String] $TargetFolderID,
-        [string] $StartDate,
-        [string] $EndDate,
-        [String] $MsgSubject
+
+        [parameter(Mandatory = $true)]
+        [String[]] $ToRecipients,
+
+        [String[]] $CCRecipients,
+
+        [String[]] $BccRecipients,
+
+        [String] $Subject,
+
+        [String] $Body
     )
     $statusBarLabel.Text = "Running..."
 
-    if ( $FolderID -ne "" -and $TargetFolderID -ne "") {
-        # Creating Filter variables
-        $filter = $null
-        if ($MsgSubject -ne "") {
-            $filter = "Subject eq '$MsgSubject'"
+    if ( $subject -eq "" ) { $Subject = "Test message sent via Graph" }
+    if ( $Body -eq "" ) { $Body = "Test message sent via Graph using ExoGraphGUI tool" }
+
+    # Base mail body Hashtable
+    $global:MailBody = @{
+        Message         = @{
+            Subject = $Subject;
+            Body    = @{
+                Content     = $Body; 
+                ContentType = "HTML"
+            }
         }
-        
-        $array = New-Object System.Collections.ArrayList
-        $params = @{
-            DestinationId = $TargetFolderID
+        savetoSentItems = "true"
+    }
+
+    # looping through each recipient in the list, and adding it in the hash table
+    $recipientsList = New-Object System.Collections.ArrayList
+    foreach ( $recipient in ($ToRecipients.split(",").Trim()) ) {
+        $recipientsList.add(
+            @{
+                EmailAddress = @{
+                    Address = $recipient
+                }
+            }
+        )
+    }
+    $global:MailBody.Message.Add("ToRecipients", $recipientsList)
+
+    # looping through each recipient in the CC list, and adding it in the hash table
+    if ( $CCRecipients -ne "" ) {
+        $ccRecipientsList = New-Object System.Collections.ArrayList
+        foreach ( $cc in $CCRecipients.split(",").Trim()) {
+            $null = $ccRecipientsList.add(
+                @{
+                    EmailAddress = @{
+                        Address = $cc
+                    }
+                }
+            )
         }
-        $msgs = Get-MgUserMailFolderMessage -UserId $Account -MailFolderId $folderID -Filter $filter -All | Where-Object { $_.ReceivedDateTime -ge $StartDate -and $_.ReceivedDateTime -lt $EndDate } | Select-Object id, subject, @{N = "Sender"; E = { $_.Sender.EmailAddress.Address } }, ReceivedDateTime, isRead
-        
-        [int]$i = 0
-        foreach ( $msg in $msgs ) {
-            $i++
-            $output = $msg | Select-Object @{Name = "Action"; Expression = { "Moving Item" } }, ReceivedDateTime, Subject
-            Move-MgUserMessage -UserId $Account -MessageId $msg.Id -BodyParameter $params
-            $array.Add($output)
+        $MailBody.Message.Add("CcRecipients", $ccRecipientsList)
+    }
+
+    # looping through each recipient in the Bcc list, and adding it in the hash table
+    if ( $BccRecipients -ne "" ) {
+        $BccRecipientsList = New-Object System.Collections.ArrayList
+        foreach ( $bcc in $BccRecipients.split(",").Trim()) {
+            $null = $BccRecipientsList.add(
+                @{
+                    EmailAddress = @{
+                        Address = $bcc
+                    }
+                }
+            )
         }
-        $dgResults.datasource = $array
-        $dgResults.AutoResizeColumns()
-        $dgResults.Visible = $True
-        $txtBoxResults.Visible = $False
-        $PremiseForm.refresh()
-        $statusBarLabel.text = "Ready. Moved Items: $i"
+        $MailBody.Message.Add("BccRecipients", $BccRecipientsList)
+    }
+
+    # Making Graph call to send email message
+    try {
+        Send-MgUserMail -UserId $Account -BodyParameter $MailBody -ErrorAction Stop
+        $statusBarLabel.text = "Ready. Mail sent."
         Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 11" -Target $Account
     }
-    else {
-        [Microsoft.VisualBasic.Interaction]::MsgBox("FolderID textbox or TargetFolderID is empty. Check and try again", [Microsoft.VisualBasic.MsgBoxStyle]::Okonly, "Information Message")
-        $statusBarLabel.text = "Process finished with warnings/errors"
+    catch {
+        $statusBarLabel.text = "Something failed to send the email message using graph. Ready."
+        Write-PSFMessage -Level Error -Message "Something failed to send the email message using graph. Error message: $_" -FunctionName "Method 11" -Target $Account
     }
 }
