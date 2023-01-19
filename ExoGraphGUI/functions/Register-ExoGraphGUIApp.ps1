@@ -38,7 +38,6 @@
     .NOTES
     General notes
 #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingConvertToSecureStringWithPlainText", "")]
     [Cmdletbinding()]
     param(
         [Parameter(Mandatory = $false)]

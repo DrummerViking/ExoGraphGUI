@@ -19,6 +19,7 @@
     PS C:\> Connect-ExoGraphGuiService
     Authenticates the user or Azure App.
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingConvertToSecureStringWithPlainText", "")]
     [Cmdletbinding()]
     param(
         [String] $ClientID,
