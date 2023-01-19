@@ -98,9 +98,9 @@
 
         # Connecting to EWS and creating service object
         $service = Connect-ExoGraphGuiService -ClientID $ClientID -TenantID $TenantID -CertificateThumbprint $CertificateThumbprint
-        $Account = $service.Account
+        $Global:Account = $service.Account
         if (-not($service.Account)) {
-            $Account = [Microsoft.VisualBasic.Interaction]::InputBox("Enter user's UPN to work with", "ExoGraphGUI", "")
+            $Global:Account = [Microsoft.VisualBasic.Interaction]::InputBox("Enter user's UPN to work with", "ExoGraphGUI", "")
         }
 
         $ExpandFilters = {
@@ -681,7 +681,7 @@
                 elseif ($radiobutton9.Checked) { Method9 -Account $Account -FolderId $txtBoxFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
                 elseif ($radiobutton10.Checked) { Method10 -Account $Account }
                 elseif ($radiobutton11.Checked) { Method11 -Account $Account -ToRecipients $txtBoxToRecipients.Text -CCRecipients $txtBoxCCRecipients.Text -BCCRecipients $txtBoxBCCRecipients.text -Subject $txtboxMailSubject.Text -Body $txtboxMailBody.Text }
-                elseif ($radiobutton12.Checked) { $Account = Method12 -Account $txtBoxFolderID.Text }
+                elseif ($radiobutton12.Checked) { $Global:Account = Method12 -Account $txtBoxFolderID.Text }
             })
 
         #"Exit" button
