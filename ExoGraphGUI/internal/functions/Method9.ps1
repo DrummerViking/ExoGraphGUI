@@ -30,6 +30,7 @@
     Method to Delete a subset of items in a folder.
 
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "")]
     [CmdletBinding()]
     param(
         [String] $Account,

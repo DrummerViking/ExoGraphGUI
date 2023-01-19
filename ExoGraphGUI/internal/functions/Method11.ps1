@@ -1,4 +1,4 @@
-Function Method11 {
+﻿Function Method11 {
     <#
     .SYNOPSIS
     Function to send email messages through MS Graph.
@@ -9,6 +9,9 @@ Function Method11 {
     Scope needed:
     Delegated: Mail.Send
     Application: Mail.Send
+
+    .PARAMETER Account
+    User's UPN to send the email message from.
 
     .PARAMETER ToRecipients
     List of recipients in the "To" list. This is a Mandatory parameter.
@@ -33,6 +36,7 @@ Function Method11 {
     PS C:\> Method11 -ToRecipients "julia@contoso.com","carlos@contoso.com" -BccRecipients "mark@contoso.com" -Subject "Lets meet!"
     Then will send the email message to "julia@contoso.com" and "carlos@contoso.com" and bcc to "mark@contoso.com", from the user previously authenticated.
 #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
     [Cmdletbinding()]
     Param (
         [String] $Account,
@@ -56,9 +60,9 @@ Function Method11 {
     # Base mail body Hashtable
     $global:MailBody = @{
         Message         = @{
-            Subject = $Subject;
+            Subject = $Subject
             Body    = @{
-                Content     = $Body; 
+                Content     = $Body
                 ContentType = "HTML"
             }
         }

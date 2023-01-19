@@ -14,6 +14,7 @@
     Method to switch to another mailbox.
 
     #>
+    [OutputType([String])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
     [CmdletBinding()]
     param(

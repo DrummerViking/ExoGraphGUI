@@ -29,15 +29,16 @@
     PS C:\> Register-ExoGraphGUIApp.ps1 -AppName "Graph DemoApp"
 
     The Function will create a new AzureAD App Registration.
-    The name of the app will be "ExoGraphGui Registered App".  
-    It will add the following API Permissions: **"Mail.ReadWrite", "MailboxSettings.Read"**.  
-    It will use a self-signed Certificate.  
+    The name of the app will be "ExoGraphGui Registered App".
+    It will add the following API Permissions: **"Mail.ReadWrite", "MailboxSettings.Read"**.
+    It will use a self-signed Certificate.
 
     Once the app is created, the Function will expose the link to grant "Admin consent" for the permissions requested.
     
     .NOTES
     General notes
 #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingConvertToSecureStringWithPlainText", "")]
     [Cmdletbinding()]
     param(
         [Parameter(Mandatory = $false)]
@@ -74,13 +75,13 @@
     $scopesArray = New-Object System.Collections.ArrayList
     @("Mail.ReadWrite", "Mail.Send", "MailboxSettings.Read") | ForEach-Object {
         New-Variable perm -Value @{
-            Id   = (Find-MgGraphPermission -SearchString $_ -PermissionType Application -ExactMatch).id 
+            Id   = (Find-MgGraphPermission -SearchString $_ -PermissionType Application -ExactMatch).id
             Type = "Role"
         }
         $null = $scopesArray.add($perm)
         remove-variable perm
     }
-    
+
     # Get context for access to tenant ID
     $context = Get-MgContext
     if ( $null -eq $context -or $context.Scopes -notcontains "Application.ReadWrite.All") {
@@ -93,8 +94,6 @@
             Connect-MgGraph -Scopes "Application.ReadWrite.All User.Read"
         }
     }
-
-
     
     # Load cert
     if ( $CertPath ) {

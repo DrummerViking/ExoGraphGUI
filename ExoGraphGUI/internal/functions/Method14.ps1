@@ -14,6 +14,7 @@
     Method to change sensitivity to items in a folder.
 
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "")]
     [CmdletBinding()]
     param(
         [String] $Account

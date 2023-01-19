@@ -31,6 +31,7 @@
     Method to list items in a specific folders in the user mailbox.
 
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "")]
     [CmdletBinding()]
     Param(
         [String] $Account,

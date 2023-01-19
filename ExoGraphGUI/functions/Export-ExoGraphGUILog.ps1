@@ -38,11 +38,11 @@
 	[CmdletBinding()]
 	Param (
 		[ValidateScript({
-			if($_ -notmatch "(\.csv)"){
-				throw "The file specified in the path argument must be of type CSV"
-			}
-			return $true
-		})]
+				if ($_ -notmatch "(\.csv)") {
+					throw "The file specified in the path argument must be of type CSV"
+				}
+				return $true
+			})]
 		[String]$FilePath = "$([Environment]::GetFolderPath("Desktop"))\$(get-date -Format "yyyy-MM-dd HH_mm_ss") - ExoGraphGui logs.csv",
 		
 		[ValidateSet('CSV', 'GridView')]
@@ -53,24 +53,16 @@
 	)
 	# creating folder path if it doesn't exists
 	$folderPath = ([System.IO.FileInfo]$FilePath).DirectoryName
-	if ( $FilePath -notlike "$home\Desktop\*" ) {
-		if ( -not (Test-Path $folderPath) ) {
-			Write-PSFMessage -Level Warning -Message "Folder '$folderPath' does not exists. Creating folder."
-			$null = New-Item -Path $folderPath -ItemType Directory -Force
-		}
+	if ( -not (Test-Path $folderPath) ) {
+		Write-PSFMessage -Level Warning -Message "Folder '$folderPath' does not exists. Creating folder."
+		$null = New-Item -Path $folderPath -ItemType Directory -Force
 	}
-	else {
-		# Checking if Desktop folder is located in the user's profile folder, or synched to OneDrive
-		if ( -not(Test-Path $folderPath) ) {
-			$FilePath = "$env:OneDriveCommercial\Desktop\$(get-date -Format "yyyy-MM-dd HH_mm_ss") - EWSGui logs.csv"
-		}
-	}
-
+	
 	Import-module PSFramework
 	$loggingpath = (Get-PSFConfig PSFramework.Logging.FileSystem.LogPath).Value
 	$logFiles = Get-ChildItem -Path $loggingpath | Where-Object LastwriteTime -gt (Get-Date).adddays(-1 * $DaysOld)
 	$csv = Import-Csv -Path $logFiles.FullName
-	$output = $csv | Where-Object ModuleName -eq "EWSGui" | Select-Object @{N = "Date"; E = { ($_.timestamp -split " ")[0] } }, @{N = "Time"; E = { Get-Date ($_.timestamp.Substring($_.timestamp.IndexOf(" ")).trim()) -Format HH:mm:ss } }, `
+	$output = $csv | Where-Object ModuleName -eq "ExoGraphGui" | Select-Object @{N = "Date"; E = { ($_.timestamp -split " ")[0] } }, @{N = "Time"; E = { Get-Date ($_.timestamp.Substring($_.timestamp.IndexOf(" ")).trim()) -Format HH:mm:ss } }, `
 		"ComputerName", "Username", "Level", "FunctionName", "Message", "Type", "ModuleName", "File", "Line", "Tags", "TargetObject", "Runspace", "Callstack" | Sort-Object Date -Descending
 
 	Switch ( $OutputType) {

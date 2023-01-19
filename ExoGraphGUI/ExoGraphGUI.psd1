@@ -27,6 +27,7 @@
 	# this module
 	RequiredModules = @(
 		@{ ModuleName='PSFramework'; ModuleVersion='1.7.249' }
+		@{ ModuleName='BurntToast'; ModuleVersion='0.8.5' }
 		@{ ModuleName='Microsoft.Graph.Authentication'; ModuleVersion='1.20.0' }
 		#@{ ModuleName='Microsoft.Graph.Calendar'; ModuleVersion='1.20.0' }
 		@{ ModuleName='Microsoft.Graph.Mail'; ModuleVersion='1.20.0' }
