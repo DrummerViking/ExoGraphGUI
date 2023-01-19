@@ -75,13 +75,13 @@
     $scopesArray = New-Object System.Collections.ArrayList
     @("Mail.ReadWrite", "Mail.Send", "MailboxSettings.Read") | ForEach-Object {
         New-Variable perm -Value @{
-            Id   = (Find-MgGraphPermission -SearchString $_ -PermissionType Application -ExactMatch).id 
+            Id   = (Find-MgGraphPermission -SearchString $_ -PermissionType Application -ExactMatch).id
             Type = "Role"
         }
         $null = $scopesArray.add($perm)
         remove-variable perm
     }
-    
+
     # Get context for access to tenant ID
     $context = Get-MgContext
     if ( $null -eq $context -or $context.Scopes -notcontains "Application.ReadWrite.All") {
@@ -94,8 +94,6 @@
             Connect-MgGraph -Scopes "Application.ReadWrite.All User.Read"
         }
     }
-
-
     
     # Load cert
     if ( $CertPath ) {
