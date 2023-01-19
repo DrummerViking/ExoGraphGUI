@@ -34,6 +34,7 @@
     Moves items from source folder to target folder based on dates and/or subject filters.
 
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "")]
     [CmdletBinding()]
     Param(
         [String] $Account,

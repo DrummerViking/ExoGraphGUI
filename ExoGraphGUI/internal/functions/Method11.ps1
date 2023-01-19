@@ -33,6 +33,7 @@ Function Method11 {
     PS C:\> Method11 -ToRecipients "julia@contoso.com","carlos@contoso.com" -BccRecipients "mark@contoso.com" -Subject "Lets meet!"
     Then will send the email message to "julia@contoso.com" and "carlos@contoso.com" and bcc to "mark@contoso.com", from the user previously authenticated.
 #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
     [Cmdletbinding()]
     Param (
         [String] $Account,
