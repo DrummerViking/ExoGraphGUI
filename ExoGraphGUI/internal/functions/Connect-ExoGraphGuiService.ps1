@@ -61,15 +61,36 @@
         }
         if ( $null -eq $conn -or $compare.sideindicator -contains "=>" ) {
             Write-PSFMessage -Level Host -Message "There is currently no active connection to MgGraph or current connection is missing required scopes: $($requiredScopes -join ", ")"
-            # Connecting to graph using Azure App Application flow
             if ( $clientID -ne '' -and $TenantID -ne '' -and ($CertificateThumbprint -ne '' -or $ClientSecret -ne '')) {
-                Write-PSFMessage -Level Host -Message "Connecting to graph with Azure AppId: $ClientID"
+                # Connecting to graph using Azure App Application flow with passed parameters
+                Write-PSFMessage -Level Host -Message "Connecting to graph with Azure AppId: $ClientID with passed parameters"
                 if ($PSBoundParameters.ContainsKey('CertificateThumbprint') ) {
                     Connect-MgGraph -ClientId $ClientID -TenantId $TenantID -CertificateThumbprint $CertificateThumbprint
                 }
                 elseif ($PSBoundParameters.ContainsKey('ClientSecret') ) {
                     $clientCredential = New-Object System.Net.NetworkCredential($ClientID, $ClientSecret)
                     Connect-MgGraph -TenantId $TenantID -ClientSecretCredential $clientCredential
+                }
+            }
+            elseif (
+                $null -ne (Get-PSFConfig -Module ExoGraphGUI -Name ClientID).value -and `
+                $null -ne (Get-PSFConfig -Module ExoGraphGUI -Name TenantID).value -and `
+                ($null -ne (Get-PSFConfig -Module ExoGraphGUI -Name ClientSecret).value -or $null -ne (Get-PSFConfig -Module ExoGraphGUI -Name CertificateThumbprint).value)
+            ) {
+                # Connecting to graph using Azure App Application flow saved values in the module
+                Write-PSFMessage -Level Host -Message "Connecting to graph with Azure AppId: $((Get-PSFConfig -Module ExoGraphGUI -Name ClientID).value) with saved credentials in the module"
+                $cid = (Get-PSFConfig -Module ExoGraphGUI -Name ClientID).value
+                $tid = (Get-PSFConfig -Module ExoGraphGUI -Name TenantID).value
+                $cs = ConvertTo-SecureString -String (Get-PSFConfig -Module ExoGraphGUI -Name ClientSecret).value -AsPlainText -Force
+                $ct = (Get-PSFConfig -Module ExoGraphGUI -Name CertificateThumbprint).value
+                if ( $ct ) {
+                    Write-PSFMessage -Level Verbose -Message "Connecting to graph with Azure AppId: $cid with saved CertificateThumbprint"
+                    Connect-MgGraph -ClientId $cid -TenantId $tid -CertificateThumbprint $ct
+                }
+                else {
+                    Write-PSFMessage -Level Verbose -Message "Connecting to graph with Azure AppId: $cid with saved ClientSecret"
+                    $clientCredential = New-Object System.Net.NetworkCredential($cid, $cs)
+                    Connect-MgGraph -TenantId $tid -ClientSecretCredential $clientCredential
                 }
             }
             else {
