@@ -3,7 +3,7 @@
     $Repository = 'PSGallery'
 )
 
-$modules = @("Pester", "PSFramework", "PSModuleDevelopment", "PSScriptAnalyzer", "Microsoft.Graph.Authentication", "Microsoft.Graph.Mail", "Microsoft.Graph.Users.Actions")
+$modules = @("Pester", "PSFramework", "BurntToast", "PSModuleDevelopment", "PSScriptAnalyzer", "Microsoft.Graph.Authentication", "Microsoft.Graph.Mail", "Microsoft.Graph.Users.Actions")
 
 # Automatically add missing dependencies
 $data = Import-PowerShellDataFile -Path "$PSScriptRoot\..\ExoGraphGUI\ExoGraphGUI.psd1"
