@@ -29,9 +29,9 @@
     PS C:\> Register-ExoGraphGUIApp.ps1 -AppName "Graph DemoApp"
 
     The Function will create a new AzureAD App Registration.
-    The name of the app will be "ExoGraphGui Registered App".  
-    It will add the following API Permissions: **"Mail.ReadWrite", "MailboxSettings.Read"**.  
-    It will use a self-signed Certificate.  
+    The name of the app will be "ExoGraphGui Registered App".
+    It will add the following API Permissions: **"Mail.ReadWrite", "MailboxSettings.Read"**.
+    It will use a self-signed Certificate.
 
     Once the app is created, the Function will expose the link to grant "Admin consent" for the permissions requested.
     

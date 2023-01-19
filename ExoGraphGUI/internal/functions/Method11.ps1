@@ -1,4 +1,4 @@
-Function Method11 {
+﻿Function Method11 {
     <#
     .SYNOPSIS
     Function to send email messages through MS Graph.
@@ -9,6 +9,9 @@ Function Method11 {
     Scope needed:
     Delegated: Mail.Send
     Application: Mail.Send
+
+    .PARAMETER Account
+    User's UPN to send the email message from.
 
     .PARAMETER ToRecipients
     List of recipients in the "To" list. This is a Mandatory parameter.
@@ -57,9 +60,9 @@ Function Method11 {
     # Base mail body Hashtable
     $global:MailBody = @{
         Message         = @{
-            Subject = $Subject;
+            Subject = $Subject
             Body    = @{
-                Content     = $Body; 
+                Content     = $Body
                 ContentType = "HTML"
             }
         }
