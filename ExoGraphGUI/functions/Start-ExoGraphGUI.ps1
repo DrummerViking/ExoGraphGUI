@@ -91,6 +91,31 @@
         $buttonGo = New-Object System.Windows.Forms.Button
         $buttonExit = New-Object System.Windows.Forms.Button
 
+        $labFromDate = New-Object System.Windows.Forms.Label
+        $global:FromDatePicker = New-Object System.Windows.Forms.DateTimePicker
+        $labToDate = New-Object System.Windows.Forms.Label
+        $global:ToDatePicker = New-Object System.Windows.Forms.DateTimePicker
+        $labSubject = New-Object System.Windows.Forms.Label
+        $global:txtBoxSubject = New-Object System.Windows.Forms.TextBox
+        $labFolderID = New-Object System.Windows.Forms.Label
+        $global:txtBoxFolderID = New-Object System.Windows.Forms.TextBox
+        $labTargetFolderID = New-Object System.Windows.Forms.Label
+        $global:txtBoxTargetFolderID = New-Object System.Windows.Forms.TextBox
+        $labToRecipients = New-Object System.Windows.Forms.Label
+        $global:txtBoxToRecipients = New-Object System.Windows.Forms.TextBox
+        $labCCRecipients = New-Object System.Windows.Forms.Label
+        $global:txtBoxCCRecipients = New-Object System.Windows.Forms.TextBox
+        $labBCCRecipients = New-Object System.Windows.Forms.Label
+        $global:txtBoxBCCRecipients = New-Object System.Windows.Forms.TextBox
+        $labMailSubject = New-Object System.Windows.Forms.Label
+        $global:txtboxMailSubject = New-Object System.Windows.Forms.TextBox
+        $labMailBody = New-Object System.Windows.Forms.Label
+        $global:txtBoxMailBody = New-Object System.Windows.Forms.TextBox
+        $labNumOfMsgs = New-Object System.Windows.Forms.Label
+        $global:NumericNumOfMsgs = New-Object System.Windows.Forms.NumericUpDown
+        $UseAttachment = New-Object System.Windows.Forms.Label
+        $global:checkboxUseAttachment = New-Object System.Windows.Forms.Checkbox
+        $labAttachmentsWarning = New-Object System.Windows.Forms.Label
         $dgResults = New-Object System.Windows.Forms.DataGridView
         $txtBoxResults = New-Object System.Windows.Forms.Label
         $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
@@ -129,71 +154,6 @@
             $PremiseForm.Controls.RemoveByKey("NumericNumOfMsgs")
             $PremiseForm.Controls.RemoveByKey("UseAttachment")
             $PremiseForm.Controls.RemoveByKey("checkboxUseAttachment")
-            #$PremiseForm.Controls.RemoveByKey("labelCombobox")
-            #$PremiseForm.Controls.RemoveByKey("comboBoxMenu")
-            #$PremiseForm.Controls.RemoveByKey("labelComboboxFolder")
-            #$PremiseForm.Controls.RemoveByKey("comboBoxFolder")
-            #$PremiseForm.Controls.RemoveByKey("labelComboboxConfig")
-            #$PremiseForm.Controls.RemoveByKey("comboBoxConfig")
-
-            $labFromDate = New-Object System.Windows.Forms.Label
-            $global:FromDatePicker = New-Object System.Windows.Forms.DateTimePicker
-            $labToDate = New-Object System.Windows.Forms.Label
-            $global:ToDatePicker = New-Object System.Windows.Forms.DateTimePicker
-            $labSubject = New-Object System.Windows.Forms.Label
-            $global:txtBoxSubject = New-Object System.Windows.Forms.TextBox
-            $labFolderID = New-Object System.Windows.Forms.Label
-            $global:txtBoxFolderID = New-Object System.Windows.Forms.TextBox
-            $labTargetFolderID = New-Object System.Windows.Forms.Label
-            $global:txtBoxTargetFolderID = New-Object System.Windows.Forms.TextBox
-            #$labelCombobox = New-Object System.Windows.Forms.Label
-            #$global:comboBoxMenu = New-Object System.Windows.Forms.ComboBox
-            #$labelComboboxFolder = New-Object System.Windows.Forms.Label
-            #$global:comboBoxFolder = New-Object System.Windows.Forms.ComboBox
-            #$labelComboboxConfig = New-Object System.Windows.Forms.Label
-            #$global:comboBoxConfig = New-Object System.Windows.Forms.ComboBox
-            $labToRecipients = New-Object System.Windows.Forms.Label
-            $global:txtBoxToRecipients = New-Object System.Windows.Forms.TextBox
-            $labCCRecipients = New-Object System.Windows.Forms.Label
-            $global:txtBoxCCRecipients = New-Object System.Windows.Forms.TextBox
-            $labBCCRecipients = New-Object System.Windows.Forms.Label
-            $global:txtBoxBCCRecipients = New-Object System.Windows.Forms.TextBox
-            $labMailSubject = New-Object System.Windows.Forms.Label
-            $global:txtboxMailSubject = New-Object System.Windows.Forms.TextBox
-            $labMailBody = New-Object System.Windows.Forms.Label
-            $global:txtBoxMailBody = New-Object System.Windows.Forms.TextBox
-            $labNumOfMsgs = New-Object System.Windows.Forms.Label
-            $global:NumericNumOfMsgs = New-Object System.Windows.Forms.NumericUpDown
-            $UseAttachment = New-Object System.Windows.Forms.Label
-            $global:checkboxUseAttachment = New-Object System.Windows.Forms.Checkbox
-
-            #Label Number of Messages
-            $labNumOfMsgs.Location = New-Object System.Drawing.Point(5, 312)
-            $labNumOfMsgs.Size = New-Object System.Drawing.Size(90, 28)
-            $labNumOfMsgs.Name = "labNumOfMsgs"
-            $labNumOfMsgs.Text = "# of Messages:"
-
-            # NumericNumOfMsgs
-            $NumericNumOfMsgs.DataBindings.DefaultDataSourceUpdateMode = 0
-            $NumericNumOfMsgs.Location = New-Object System.Drawing.Point(95, 310)
-            $NumericNumOfMsgs.Size = New-Object System.Drawing.Size(40, 30)
-            $NumericNumOfMsgs.Name = "NumericNumOfMsgs"
-            $NumericNumOfMsgs.Minimum = 1
-            $NumericNumOfMsgs.Maximum = 9999
-            $NumericNumOfMsgs.Value = 1
-
-            # Label Use Attachment
-            $UseAttachment.Location = New-Object System.Drawing.Point(5, 337)
-            $UseAttachment.Size = New-Object System.Drawing.Size(110, 35)
-            $UseAttachment.Name = "UseAttachment"
-            $UseAttachment.Text = "Add attachment"
-
-            # checkbox Use Attachment
-            $checkboxUseAttachment.DataBindings.DefaultDataSourceUpdateMode = 0
-            $checkboxUseAttachment.Location = New-Object System.Drawing.Point(117, 335)
-            $checkboxUseAttachment.Size = New-Object System.Drawing.Size(15, 20)
-            $checkboxUseAttachment.Name = "checkboxUseAttachment"
-            $checkboxUseAttachment.Checked = $false
 
             #Label FromDate
             $labFromDate.Location = New-Object System.Drawing.Point(5, 285)
@@ -309,7 +269,7 @@
 
             #Label Mail Subject
             $labMailSubject.Location = New-Object System.Drawing.Point(5, 362)
-            $labMailSubject.Size = New-Object System.Drawing.Size(45, 25)
+            $labMailSubject.Size = New-Object System.Drawing.Size(50, 25)
             $labMailSubject.Name = "labMailSubject"
             $labMailSubject.Text = "Subject:"
 
@@ -331,67 +291,47 @@
             $txtboxMailBody.Name = "txtboxMailBody"
             $txtboxMailBody.Text = ""
 
-            <#Label Combobox
-            $labelCombobox.Location = New-Object System.Drawing.Point(400, 285)
-            $labelCombobox.Size = New-Object System.Drawing.Size(80, 35)
-            $labelCombobox.Name = "labelCombobox"
-            if ($radiobutton14.Checked) {
-                $labelCombobox.Text = "Change Option"
-            }
-            else {
-                $labelCombobox.Text = "Delete Option"
-            }
+            #Label Number of Messages
+            $labNumOfMsgs.Location = New-Object System.Drawing.Point(5, 312)
+            $labNumOfMsgs.Size = New-Object System.Drawing.Size(90, 28)
+            $labNumOfMsgs.Name = "labNumOfMsgs"
+            $labNumOfMsgs.Text = "# of Messages:"
 
-            #ComboBox Menu
-            $comboBoxMenu.DataBindings.DefaultDataSourceUpdateMode = 0
-            $comboBoxMenu.FormattingEnabled = $True
-            $comboBoxMenu.Location = New-Object System.Drawing.Point(485, 285)
-            $comboBoxMenu.Name = "comboBoxMenu"
-            $comboBoxMenu.add_SelectedIndexChanged($handler_comboBoxMenu_SelectedIndexChanged)
+            # NumericNumOfMsgs
+            $NumericNumOfMsgs.DataBindings.DefaultDataSourceUpdateMode = 0
+            $NumericNumOfMsgs.Location = New-Object System.Drawing.Point(95, 310)
+            $NumericNumOfMsgs.Size = New-Object System.Drawing.Size(40, 30)
+            $NumericNumOfMsgs.Name = "NumericNumOfMsgs"
+            $NumericNumOfMsgs.Minimum = 1
+            $NumericNumOfMsgs.Maximum = 9999
+            $NumericNumOfMsgs.Value = 1
 
-            #Label ComboboxFolder
-            $labelComboboxFolder.Location = New-Object System.Drawing.Point(5, 285)
-            $labelComboboxFolder.Size = New-Object System.Drawing.Size(50, 35)
-            $labelComboboxFolder.Name = "labelComboboxFolder"
-            $labelComboboxFolder.Text = "Folder:"
+            # Label Use Attachment
+            $UseAttachment.Location = New-Object System.Drawing.Point(5, 337)
+            $UseAttachment.Size = New-Object System.Drawing.Size(110, 35)
+            $UseAttachment.Name = "UseAttachment"
+            $UseAttachment.Text = "Add attachment"
 
-            #ComboBoxFolder
-            $comboBoxFolder.DataBindings.DefaultDataSourceUpdateMode = 0
-            $comboBoxFolder.FormattingEnabled = $True
-            $comboBoxFolder.Location = New-Object System.Drawing.Point(55, 285)
-            $comboBoxFolder.Size = New-Object System.Drawing.Size(70, 35)
-            $comboBoxFolder.Name = "comboBoxFolder"
-            $comboBoxFolder.Items.Add("") | Out-Null
-            $comboBoxFolder.Items.Add("Root") | Out-Null
-            $comboBoxFolder.Items.Add("Calendar") | Out-Null
-            $comboBoxFolder.Items.Add("Inbox") | Out-Null
-            $comboBoxFolder.add_SelectedIndexChanged($handler_comboBoxFolder_SelectedIndexChanged)
+            # checkbox Use Attachment
+            $checkboxUseAttachment.DataBindings.DefaultDataSourceUpdateMode = 0
+            $checkboxUseAttachment.Location = New-Object System.Drawing.Point(117, 335)
+            $checkboxUseAttachment.Size = New-Object System.Drawing.Size(15, 20)
+            $checkboxUseAttachment.Name = "checkboxUseAttachment"
+            $checkboxUseAttachment.Checked = $false
 
-            #Label ComboboxConfig
-            $labelComboboxConfig.Location = New-Object System.Drawing.Point(145, 285)
-            $labelComboboxConfig.Size = New-Object System.Drawing.Size(75, 35)
-            $labelComboboxConfig.Name = "labelComboboxConfig"
-            $labelComboboxConfig.Text = "Config Name:"
+            # Label Attachments warning
+            $labAttachmentsWarning.Location = New-Object System.Drawing.Point(660, 82)
+            $labAttachmentsWarning.Size = New-Object System.Drawing.Size(10, 20)
+            $labAttachmentsWarning.Name = "labAttachmentsWarning"
+            $labAttachmentsWarning.Font = New-Object System.Drawing.Font("Arial",9,[System.Drawing.FontStyle]::Underline)
+            $labAttachmentsWarning.ForeColor = "Blue"
+            $labAttachmentsWarning.Text = "?"
+            $labAttachmentsWarning.add_Click({
+                [Microsoft.VisualBasic.Interaction]::MsgBox("Injecting sample messages with no attachments should be pretty fast.
+But when using attachments, it might take considerable seconds.",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
+            })
+            $PremiseForm.Controls.Add($labAttachmentsWarning)
 
-            #ComboBoxConfig
-            $comboBoxConfig.DataBindings.DefaultDataSourceUpdateMode = 0
-            $comboBoxConfig.FormattingEnabled = $True
-            $comboBoxConfig.Location = New-Object System.Drawing.Point(225, 285)
-            $ComboboxConfig.Size = New-Object System.Drawing.Size(180, 35)
-            $comboBoxConfig.Name = "comboBoxConfig"
-            $comboBoxConfig.Items.Add("") | Out-Null
-            $comboBoxConfig.Items.Add("Aggregated.OwaUserConfiguration") | Out-Null
-            $comboBoxConfig.Items.Add("UserConfigurationProperties.All") | Out-Null
-            $comboBoxConfig.Items.Add("OWA.AttachmentDataProvider") | Out-Null
-            $comboBoxConfig.Items.Add("OWA.AutocompleteCache") | Out-Null
-            $comboBoxConfig.Items.Add("OWA.SessionInformation") | Out-Null
-            $comboBoxConfig.Items.Add("OWA.UserOptions") | Out-Null
-            $comboBoxConfig.Items.Add("OWA.ViewStateConfiguration") | Out-Null
-            $comboBoxConfig.Items.Add("Suite.Storage") | Out-Null
-            $comboBoxConfig.Items.Add("UM.E14.PersonalAutoAttendants") | Out-Null
-            $comboBoxConfig.Items.Add("CleanFinders") | Out-Null
-            $comboBoxConfig.add_SelectedIndexChanged($handler_comboBoxConfig_SelectedIndexChanged)
-            #>
             if ($radiobutton3.Checked) {
                 $PremiseForm.Controls.Add($labFolderID)
                 $PremiseForm.Controls.Add($txtBoxFolderID)
@@ -465,21 +405,6 @@
             $PremiseForm.refresh()
         }
 
-        # $handler_comboBoxMenu_SelectedIndexChanged = {
-        #     # Get the Event ID when item is selected
-        #     $ComboOption = $comboBoxMenu.selectedItem.ToString()
-        # }
-
-        # $handler_comboBoxFolder_SelectedIndexChanged = {
-        #     # Get the Event ID when item is selected
-        #     $ComboOption1 = $comboBoxFolder.selectedItem.ToString()
-        # }
-
-        # $handler_comboBoxConfig_SelectedIndexChanged = {
-        #     # Get the Event ID when item is selected
-        #     $ComboOption2 = $comboBoxConfig.selectedItem.ToString()
-        # }
-
         $OnLoadMainWindow_StateCorrection = { #Correct the initial state of the form to prevent the .Net maximized form issue
             $PremiseForm.WindowState = $InitialFormWindowState
         }
@@ -502,10 +427,6 @@
         if ( $null -eq $service.Account ) {
             $PremiseForm.Controls.Add($radiobutton13)
         }
-        #$PremiseForm.Controls.Add($radiobutton13)
-        #$PremiseForm.Controls.Add($radiobutton14)
-        #$PremiseForm.Controls.Add($radiobutton15)
-        #$PremiseForm.Controls.Add($radiobutton16)
         
         $PremiseForm.Controls.Add($buttonGo)
         $PremiseForm.Controls.Add($buttonExit)
@@ -528,7 +449,7 @@
         #
         $radiobutton1.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton1.Location = New-Object System.Drawing.Point(20, 20)
-        $radiobutton1.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton1.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton1.Text = "1 - List Folders in Root"
         $radioButton1.Checked = $true
         $radiobutton1.UseVisualStyleBackColor = $True
@@ -538,7 +459,7 @@
         #
         $radiobutton2.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton2.Location = New-Object System.Drawing.Point(20, 50)
-        $radiobutton2.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton2.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton2.Text = "2 - List folders in Recoverable Items Root folder"
         $radioButton2.Checked = $false
         $radiobutton2.UseVisualStyleBackColor = $True
@@ -548,7 +469,7 @@
         #
         $radiobutton3.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton3.Location = New-Object System.Drawing.Point(20, 80)
-        $radiobutton3.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton3.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton3.Text = "3 - List Items in a desired Folder"
         $radiobutton3.Checked = $false
         $radiobutton3.UseVisualStyleBackColor = $True
@@ -558,7 +479,7 @@
         #
         $radiobutton4.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton4.Location = New-Object System.Drawing.Point(20, 110)
-        $radiobutton4.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton4.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton4.Text = "4 - Create a custom Folder in Root"
         $radiobutton4.Checked = $false
         $radiobutton4.UseVisualStyleBackColor = $True
@@ -568,7 +489,7 @@
         #
         $radiobutton5.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton5.Location = New-Object System.Drawing.Point(20, 140)
-        $radiobutton5.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton5.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton5.Text = "5 - Delete a Folder"
         $radiobutton5.Checked = $false
         $radiobutton5.UseVisualStyleBackColor = $True
@@ -578,7 +499,7 @@
         #
         $radiobutton6.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton6.Location = New-Object System.Drawing.Point(20, 170)
-        $radiobutton6.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton6.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton6.Text = "6 - Get user's Inbox Rules"
         $radiobutton6.Checked = $false
         $radiobutton6.UseVisualStyleBackColor = $True
@@ -589,7 +510,7 @@
         $radiobutton7.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton7.Location = New-Object System.Drawing.Point(20, 200)
         $radiobutton7.Name = "radiobutton7"
-        $radiobutton7.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton7.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton7.Text = "7 - Get user's OOF Settings"
         $radiobutton7.Checked = $false
         $radiobutton7.UseVisualStyleBackColor = $True
@@ -599,7 +520,7 @@
         #
         $radiobutton8.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton8.Location = New-Object System.Drawing.Point(20, 230)
-        $radiobutton8.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton8.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton8.Text = "8 - Move items between folders"
         $radiobutton8.Checked = $false
         $radiobutton8.UseVisualStyleBackColor = $True
@@ -609,7 +530,7 @@
         #
         $radiobutton9.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton9.Location = New-Object System.Drawing.Point(20, 260)
-        $radiobutton9.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton9.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton9.TabIndex = 9
         $radiobutton9.Text = "9 - Delete a subset of items in a folder"
         $radiobutton9.Checked = $false
@@ -620,7 +541,7 @@
         #
         $radiobutton10.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton10.Location = New-Object System.Drawing.Point(400, 20)
-        $radiobutton10.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton10.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton10.Text = "10 - Get user's Delegate information"
         $radiobutton10.Checked = $false
         $radiobutton10.UseVisualStyleBackColor = $True
@@ -630,7 +551,7 @@
         #
         $radiobutton11.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton11.Location = New-Object System.Drawing.Point(400, 50)
-        $radiobutton11.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton11.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton11.Text = "11 - Send mail message"
         $radiobutton11.Checked = $false
         $radiobutton11.UseVisualStyleBackColor = $True
@@ -640,8 +561,8 @@
         #
         $radiobutton12.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton12.Location = New-Object System.Drawing.Point(400, 80)
-        $radiobutton12.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton12.Text = "12 - Inject mail messages into Inbox folder"
+        $radiobutton12.Size = New-Object System.Drawing.Size(260, 20)
+        $radiobutton12.Text = "12 - Inject mail messages into 'Inbox' folder"
         $radiobutton12.Checked = $false
         $radiobutton12.UseVisualStyleBackColor = $True
         $radiobutton12.Add_Click({ & $ExpandFilters })
@@ -650,8 +571,8 @@
         #
         $radiobutton13.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton13.Location = New-Object System.Drawing.Point(400, 110)
-        $radiobutton13.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton13.Text = "13 - Switch to another Mailbox"
+        $radiobutton13.Size = New-Object System.Drawing.Size(300, 20)
+        $radiobutton13.Text = "13 - Switch to another Mailbox:"
         $radiobutton13.Checked = $false
         $radiobutton13.UseVisualStyleBackColor = $True
         $radiobutton13.Add_Click({ & $ExpandFilters })
@@ -660,7 +581,7 @@
         #
         $radiobutton14.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton14.Location = New-Object System.Drawing.Point(400, 140)
-        $radiobutton14.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton14.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton14.Text = "14"
         $radiobutton14.Checked = $false
         $radiobutton14.UseVisualStyleBackColor = $True
@@ -670,7 +591,7 @@
         #
         $radiobutton15.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton15.Location = New-Object System.Drawing.Point(400, 170)
-        $radiobutton15.Size = New-Object System.Drawing.Size(300, 15)
+        $radiobutton15.Size = New-Object System.Drawing.Size(300, 20)
         $radiobutton15.Text = "15"
         $radiobutton15.Checked = $false
         $radiobutton15.UseVisualStyleBackColor = $True
@@ -680,7 +601,7 @@
         #
         $radiobutton16.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton16.Location = New-Object System.Drawing.Point(400, 200)
-        $radiobutton16.Size = New-Object System.Drawing.Size(190, 15)
+        $radiobutton16.Size = New-Object System.Drawing.Size(190, 20)
         $radiobutton16.Text = "16"
         $radiobutton16.Checked = $false
         $radiobutton16.UseVisualStyleBackColor = $True
@@ -727,8 +648,7 @@
         $txtBoxResults.Name = "TextResults"
         $txtBoxResults.BackColor = [System.Drawing.Color]::White
         $txtBoxResults.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
-        $Font = New-Object System.Drawing.Font("Consolas", 8)
-        $txtBoxResults.Font = $Font
+        $txtBoxResults.Font = New-Object System.Drawing.Font("Consolas", 8)
         $PremiseForm.Controls.Add($txtBoxResults)
 
         #dataGrid

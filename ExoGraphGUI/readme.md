@@ -38,7 +38,7 @@ Please check on the following page for more details and options to configure you
 [Authentication Options](/docs/AuthenticationOptions.md)  
 
 ## Module features:
-### Allows to perform 12 different operations using EWS API:
+### Allows to perform 12 different operations using Graph API:
 - Option 1 : List Folders in Root
 - Option 2 : List folders in Recoverable Items Root folder
 - Option 3 : List Items in a desired Folder

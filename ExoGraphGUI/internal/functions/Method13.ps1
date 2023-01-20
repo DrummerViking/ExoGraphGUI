@@ -23,7 +23,7 @@
     $statusBarLabel.Text = "Running..."
 
      if ( $Account -ne "" ) {
-        $labImpersonation.Location = New-Object System.Drawing.Point(400,110)
+        $labImpersonation.Location = New-Object System.Drawing.Point(440,135)
         $labImpersonation.Size = New-Object System.Drawing.Size(300,20)
         $labImpersonation.Name = "labImpersonation"
         $labImpersonation.ForeColor = "Blue"
