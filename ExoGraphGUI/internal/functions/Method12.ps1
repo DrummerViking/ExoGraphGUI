@@ -16,12 +16,18 @@
     .PARAMETER ToRecipients
     List of recipients in the "To" list. If ommitted, it will be used the same as the logged on user.
 
+    .PARAMETER NumberOfMessages
+    Number of messages to be injected into the Inbox folder. By default is 1.
+
     .PARAMETER Subject
     Use this parameter to set the subject's text. By default will have: "Test message sent via Graph".
 
     .PARAMETER Body
     Use this parameter to set the body's text. By default will have: "Test message sent via Graph using Powershell".
     
+    .PARAMETER UseAttachment
+    Use this switch parameter to add an attachment to sample messages.
+
     .EXAMPLE
     PS C:\> Method12 -ToRecipients "john@contoso.com"
     Then will send the email message to "john@contoso.com" from the user previously authenticated.
@@ -37,7 +43,7 @@
 
         [String[]] $ToRecipients,
 
-        [int] $NumberOfMessages,
+        [int] $NumberOfMessages = 1,
 
         [String] $Subject,
 
@@ -75,7 +81,7 @@
             New-burntToastNotification -ProgressBar $progresBar -UniqueIdentifier "bar001" -Text "Creating sample file"
 
             [int]$i = 0
-            1..5000 | ForEach-Object { 
+            1..5000 | ForEach-Object {
                 $i++
                 Write-Progress -activity "Creating sample file. Please wait..." -status "Percent scanned: " -PercentComplete ($i * 100 / 5000) -ErrorAction SilentlyContinue
                 "test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool. test file for ExoGraphGUI tool.  " | Add-Content -Path "$env:Temp\SampleFileName.txt" -Force
