@@ -125,6 +125,10 @@
             $PremiseForm.Controls.RemoveByKey("txtBoxMailSubject")
             $PremiseForm.Controls.RemoveByKey("labMailbody")
             $PremiseForm.Controls.RemoveByKey("txtboxMailBody")
+            $PremiseForm.Controls.RemoveByKey("labNumOfMsgs")
+            $PremiseForm.Controls.RemoveByKey("NumericNumOfMsgs")
+            $PremiseForm.Controls.RemoveByKey("UseAttachment")
+            $PremiseForm.Controls.RemoveByKey("checkboxUseAttachment")
             #$PremiseForm.Controls.RemoveByKey("labelCombobox")
             #$PremiseForm.Controls.RemoveByKey("comboBoxMenu")
             #$PremiseForm.Controls.RemoveByKey("labelComboboxFolder")
@@ -158,66 +162,38 @@
             $global:txtboxMailSubject = New-Object System.Windows.Forms.TextBox
             $labMailBody = New-Object System.Windows.Forms.Label
             $global:txtBoxMailBody = New-Object System.Windows.Forms.TextBox
+            $labNumOfMsgs = New-Object System.Windows.Forms.Label
+            $global:NumericNumOfMsgs = New-Object System.Windows.Forms.NumericUpDown
+            $UseAttachment = New-Object System.Windows.Forms.Label
+            $global:checkboxUseAttachment = New-Object System.Windows.Forms.Checkbox
 
-            #Label TO recipients
-            $labToRecipients.Location = New-Object System.Drawing.Point(5, 287)
-            $labToRecipients.Size = New-Object System.Drawing.Size(25, 25)
-            $labToRecipients.Name = "labToRecipients"
-            $labToRecipients.Text = "To:"
+            #Label Number of Messages
+            $labNumOfMsgs.Location = New-Object System.Drawing.Point(5, 312)
+            $labNumOfMsgs.Size = New-Object System.Drawing.Size(90, 28)
+            $labNumOfMsgs.Name = "labNumOfMsgs"
+            $labNumOfMsgs.Text = "# of Messages:"
 
-            #TextBox TO recipients
-            $txtBoxToRecipients.Location = New-Object System.Drawing.Point(75, 285)
-            $txtBoxToRecipients.Size = New-Object System.Drawing.Size(280, 20)
-            $txtBoxToRecipients.Name = "txtBoxToRecipients"
-            $txtBoxToRecipients.Text = ""
+            # NumericNumOfMsgs
+            $NumericNumOfMsgs.DataBindings.DefaultDataSourceUpdateMode = 0
+            $NumericNumOfMsgs.Location = New-Object System.Drawing.Point(95, 310)
+            $NumericNumOfMsgs.Size = New-Object System.Drawing.Size(40, 30)
+            $NumericNumOfMsgs.Name = "NumericNumOfMsgs"
+            $NumericNumOfMsgs.Minimum = 1
+            $NumericNumOfMsgs.Maximum = 9999
+            $NumericNumOfMsgs.Value = 1
 
-            #Label CC Recipients
-            $labCCRecipients.Location = New-Object System.Drawing.Point(5, 312)
-            $labCCRecipients.Size = New-Object System.Drawing.Size(25, 25)
-            $labCCRecipients.Name = "labCCRecipients"
-            $labCCRecipients.Text = "Cc:"
+            # Label Use Attachment
+            $UseAttachment.Location = New-Object System.Drawing.Point(5, 337)
+            $UseAttachment.Size = New-Object System.Drawing.Size(110, 35)
+            $UseAttachment.Name = "UseAttachment"
+            $UseAttachment.Text = "Add attachment"
 
-            #TextBox CC recipients
-            $txtBoxCCRecipients.Location = New-Object System.Drawing.Point(75, 310)
-            $txtBoxCCRecipients.Size = New-Object System.Drawing.Size(280, 20)
-            $txtBoxCCRecipients.Name = "txtBoxCCRecipients"
-            $txtBoxCCRecipients.Text = ""
-
-            #Label BCC Recipients
-            $labBCCRecipients.Location = New-Object System.Drawing.Point(5, 337)
-            $labBCCRecipients.Size = New-Object System.Drawing.Size(30, 25)
-            $labBCCRecipients.Name = "labBCCRecipients"
-            $labBCCRecipients.Text = "Bcc:"
-
-            #TextBox BCC recipients
-            $txtBoxBCCRecipients.Location = New-Object System.Drawing.Point(75, 335)
-            $txtBoxBCCRecipients.Size = New-Object System.Drawing.Size(280, 20)
-            $txtBoxBCCRecipients.Name = "txtBoxBCCRecipients"
-            $txtBoxBCCRecipients.Text = ""
-
-            #Label Mail Subject
-            $labMailSubject.Location = New-Object System.Drawing.Point(5, 362)
-            $labMailSubject.Size = New-Object System.Drawing.Size(45, 25)
-            $labMailSubject.Name = "labMailSubject"
-            $labMailSubject.Text = "Subject:"
-
-            #TextBox Mail Subject
-            $txtboxMailSubject.Location = New-Object System.Drawing.Point(75, 360)
-            $txtboxMailSubject.Size = New-Object System.Drawing.Size(280, 20)
-            $txtboxMailSubject.Name = "txtboxMailSubject"
-            $txtboxMailSubject.Text = ""
-
-            #Label Mail Body
-            $labMailBody.Location = New-Object System.Drawing.Point(5, 387)
-            $labMailBody.Size = New-Object System.Drawing.Size(45, 25)
-            $labMailBody.Name = "labMailBody"
-            $labMailBody.Text = "Body:"
-
-            #TextBox Mail Body
-            $txtboxMailBody.Location = New-Object System.Drawing.Point(75, 385)
-            $txtboxMailBody.Size = New-Object System.Drawing.Size(280, 50)
-            $txtboxMailBody.Name = "txtboxMailBody"
-            $txtboxMailBody.Text = ""
+            # checkbox Use Attachment
+            $checkboxUseAttachment.DataBindings.DefaultDataSourceUpdateMode = 0
+            $checkboxUseAttachment.Location = New-Object System.Drawing.Point(117, 335)
+            $checkboxUseAttachment.Size = New-Object System.Drawing.Size(15, 20)
+            $checkboxUseAttachment.Name = "checkboxUseAttachment"
+            $checkboxUseAttachment.Checked = $false
 
             #Label FromDate
             $labFromDate.Location = New-Object System.Drawing.Point(5, 285)
@@ -276,7 +252,7 @@
                 $labFolderID.Size = New-Object System.Drawing.Size(95, 20)
                 $labFolderID.Text = "SourceFolderID:"
             }
-            elseif ($radiobutton12.Checked) {
+            elseif ($radiobutton13.Checked) {
                 $labFolderID.Location = New-Object System.Drawing.Point(5, 285)
                 $labFolderID.Size = New-Object System.Drawing.Size(95, 20)
                 $labFolderID.Text = "E-mail Address:"
@@ -294,6 +270,66 @@
             $txtBoxTargetFolderID.Size = New-Object System.Drawing.Size(280, 20)
             $txtBoxTargetFolderID.Name = "txtBoxTargetFolderID"
             $txtBoxTargetFolderID.Text = ""
+
+            #Label TO recipients
+            $labToRecipients.Location = New-Object System.Drawing.Point(5, 287)
+            $labToRecipients.Size = New-Object System.Drawing.Size(25, 25)
+            $labToRecipients.Name = "labToRecipients"
+            $labToRecipients.Text = "To:"
+
+            #TextBox TO recipients
+            $txtBoxToRecipients.Location = New-Object System.Drawing.Point(95, 285)
+            $txtBoxToRecipients.Size = New-Object System.Drawing.Size(280, 20)
+            $txtBoxToRecipients.Name = "txtBoxToRecipients"
+            $txtBoxToRecipients.Text = ""
+
+            #Label CC Recipients
+            $labCCRecipients.Location = New-Object System.Drawing.Point(5, 312)
+            $labCCRecipients.Size = New-Object System.Drawing.Size(25, 25)
+            $labCCRecipients.Name = "labCCRecipients"
+            $labCCRecipients.Text = "Cc:"
+
+            #TextBox CC recipients
+            $txtBoxCCRecipients.Location = New-Object System.Drawing.Point(95, 310)
+            $txtBoxCCRecipients.Size = New-Object System.Drawing.Size(280, 20)
+            $txtBoxCCRecipients.Name = "txtBoxCCRecipients"
+            $txtBoxCCRecipients.Text = ""
+
+            #Label BCC Recipients
+            $labBCCRecipients.Location = New-Object System.Drawing.Point(5, 337)
+            $labBCCRecipients.Size = New-Object System.Drawing.Size(30, 25)
+            $labBCCRecipients.Name = "labBCCRecipients"
+            $labBCCRecipients.Text = "Bcc:"
+
+            #TextBox BCC recipients
+            $txtBoxBCCRecipients.Location = New-Object System.Drawing.Point(95, 335)
+            $txtBoxBCCRecipients.Size = New-Object System.Drawing.Size(280, 20)
+            $txtBoxBCCRecipients.Name = "txtBoxBCCRecipients"
+            $txtBoxBCCRecipients.Text = ""
+
+            #Label Mail Subject
+            $labMailSubject.Location = New-Object System.Drawing.Point(5, 362)
+            $labMailSubject.Size = New-Object System.Drawing.Size(45, 25)
+            $labMailSubject.Name = "labMailSubject"
+            $labMailSubject.Text = "Subject:"
+
+            #TextBox Mail Subject
+            $txtboxMailSubject.Location = New-Object System.Drawing.Point(95, 360)
+            $txtboxMailSubject.Size = New-Object System.Drawing.Size(280, 20)
+            $txtboxMailSubject.Name = "txtboxMailSubject"
+            $txtboxMailSubject.Text = ""
+
+            #Label Mail Body
+            $labMailBody.Location = New-Object System.Drawing.Point(5, 387)
+            $labMailBody.Size = New-Object System.Drawing.Size(45, 25)
+            $labMailBody.Name = "labMailBody"
+            $labMailBody.Text = "Body:"
+
+            #TextBox Mail Body
+            $txtboxMailBody.Location = New-Object System.Drawing.Point(95, 385)
+            $txtboxMailBody.Size = New-Object System.Drawing.Size(280, 50)
+            $txtboxMailBody.Name = "txtboxMailBody"
+            $txtboxMailBody.Text = ""
 
             <#Label Combobox
             $labelCombobox.Location = New-Object System.Drawing.Point(400, 285)
@@ -410,31 +446,19 @@
                 $PremiseForm.Controls.Add($labMailBody)
                 $PremiseForm.Controls.Add($txtboxMailBody)
             }
-            # elseif ($radiobutton14.Checked) {
-            #     $comboBoxMenu.Items.Add("") | Out-Null
-            #     $comboBoxMenu.Items.Add("Normal") | Out-Null
-            #     $comboBoxMenu.Items.Add("Personal") | Out-Null
-            #     $comboBoxMenu.Items.Add("Private") | Out-Null
-            #     $comboBoxMenu.Items.Add("Confidential") | Out-Null
-            #     $comboBoxMenu.SelectedItem = "Normal"
-            #     $PremiseForm.Controls.Add($labFromDate)
-            #     $PremiseForm.Controls.Add($FromDatePicker)
-            #     $PremiseForm.Controls.Add($labToDate)
-            #     $PremiseForm.Controls.Add($ToDatePicker)
-            #     $PremiseForm.Controls.Add($labSubject)
-            #     $PremiseForm.Controls.Add($txtBoxSubject)
-            #     $PremiseForm.Controls.Add($labFolderID)
-            #     $PremiseForm.Controls.Add($txtBoxFolderID)
-            #     $PremiseForm.Controls.Add($labelCombobox)
-            #     $PremiseForm.Controls.Add($comboBoxMenu)
-            # }
-            # elseif ($radiobutton15.Checked) {
-            #     $PremiseForm.Controls.Add($labelComboboxFolder)
-            #     $PremiseForm.Controls.Add($comboBoxFolder)
-            #     $PremiseForm.Controls.Add($labelComboboxConfig)
-            #     $PremiseForm.Controls.Add($comboBoxConfig)
-            # }
-            elseif ($radiobutton12.Checked) {
+            elseif ( $radiobutton12.Checked) {
+                $PremiseForm.Controls.Add($labToRecipients)
+                $PremiseForm.Controls.Add($txtBoxToRecipients)
+                $PremiseForm.Controls.Add($labNumOfMsgs)
+                $PremiseForm.Controls.Add($NumericNumOfMsgs)
+                $PremiseForm.Controls.Add($labMailSubject)
+                $PremiseForm.Controls.Add($txtboxMailSubject)
+                $PremiseForm.Controls.Add($labMailBody)
+                $PremiseForm.Controls.Add($txtboxMailBody)
+                $PremiseForm.Controls.Add($UseAttachment)
+                $PremiseForm.Controls.Add($checkboxUseAttachment)
+            }
+            elseif ($radiobutton13.Checked) {
                 $PremiseForm.Controls.Add($labFolderID)
                 $PremiseForm.Controls.Add($txtBoxFolderID)
             }
@@ -474,8 +498,9 @@
         $PremiseForm.Controls.Add($radiobutton9)
         $PremiseForm.Controls.Add($radiobutton10)
         $PremiseForm.Controls.Add($radiobutton11)
+        $PremiseForm.Controls.Add($radiobutton12)
         if ( $null -eq $service.Account ) {
-            $PremiseForm.Controls.Add($radiobutton12)
+            $PremiseForm.Controls.Add($radiobutton13)
         }
         #$PremiseForm.Controls.Add($radiobutton13)
         #$PremiseForm.Controls.Add($radiobutton14)
@@ -616,7 +641,7 @@
         $radiobutton12.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton12.Location = New-Object System.Drawing.Point(400, 80)
         $radiobutton12.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton12.Text = "12 - Switch to another Mailbox"
+        $radiobutton12.Text = "12 - Inject mail messages into Inbox folder"
         $radiobutton12.Checked = $false
         $radiobutton12.UseVisualStyleBackColor = $True
         $radiobutton12.Add_Click({ & $ExpandFilters })
@@ -626,7 +651,7 @@
         $radiobutton13.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton13.Location = New-Object System.Drawing.Point(400, 110)
         $radiobutton13.Size = New-Object System.Drawing.Size(300, 15)
-        $radiobutton13.Text = "13"
+        $radiobutton13.Text = "13 - Switch to another Mailbox"
         $radiobutton13.Checked = $false
         $radiobutton13.UseVisualStyleBackColor = $True
         $radiobutton13.Add_Click({ & $ExpandFilters })
@@ -670,8 +695,8 @@
         $buttonGo.Text = "Go"
         $buttonGo.UseVisualStyleBackColor = $True
         $buttonGo.add_Click({
-                if ($radiobutton1.Checked) { Method1 -Account $Account}
-                elseif ($radiobutton2.Checked) { Method1 -Account $Account}
+                if ($radiobutton1.Checked) { Method1 -Account $Account }
+                elseif ($radiobutton2.Checked) { Method1 -Account $Account }
                 elseif ($radiobutton3.Checked) { Method3 -Account $Account -FolderId $txtBoxFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
                 elseif ($radiobutton4.Checked) { Method4 -Account $Account -DisplayName $txtBoxFolderID.Text }
                 elseif ($radiobutton5.Checked) { Method5 -Account $Account -Folderid $txtBoxFolderID.Text }
@@ -681,7 +706,8 @@
                 elseif ($radiobutton9.Checked) { Method9 -Account $Account -FolderId $txtBoxFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
                 elseif ($radiobutton10.Checked) { Method10 -Account $Account }
                 elseif ($radiobutton11.Checked) { Method11 -Account $Account -ToRecipients $txtBoxToRecipients.Text -CCRecipients $txtBoxCCRecipients.Text -BCCRecipients $txtBoxBCCRecipients.text -Subject $txtboxMailSubject.Text -Body $txtboxMailBody.Text }
-                elseif ($radiobutton12.Checked) { $Global:Account = Method12 -Account $txtBoxFolderID.Text }
+                elseif ($radiobutton12.Checked) { Method12 -Account $Account -ToRecipients $txtBoxToRecipients.Text -Subject $txtboxMailSubject.Text -Body $txtboxMailBody.Text -NumberOfMessages $NumericNumOfMsgs.Value -UseAttachment:$checkboxUseAttachment.Checked }
+                elseif ($radiobutton13.Checked) { $Global:Account = Method13 -Account $txtBoxFolderID.Text }
             })
 
         #"Exit" button
