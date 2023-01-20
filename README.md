@@ -38,7 +38,7 @@ Please check on the following page for more details and options to configure you
 [Authentication Options](/docs/AuthenticationOptions.md)  
 
 ## Module features:
-### Allows to perform 11 different operations using EWS API:
+### Allows to perform 12 different operations using EWS API:
 - Option 1 : List Folders in Root
 - Option 2 : List folders in Recoverable Items Root folder
 - Option 3 : List Items in a desired Folder
@@ -50,7 +50,8 @@ Please check on the following page for more details and options to configure you
 - Option 9 : Delete a subset of items in a folder
 - Option 10 : Get user's Delegate information
 - Option 11 : Send Mail message
-- Option 12 : Switch to another Mailbox
+- Option 12 : Inject sample messages in the user's inbox with or without attachment
+- Option 13 : Switch to another Mailbox
 
 ## Module logging
 

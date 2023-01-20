@@ -6,7 +6,7 @@
     .DESCRIPTION
     Function to create the Azure App Registration for ExoGraphGUI.
     It will require an additional PS module "Microsoft.Graph.Applications", if not already installed it will download it.
-    You have to pass the list of app permissions you want to grant.
+    It will use these app scopes for the app "Mail.ReadWrite", "Mail.Send", "MailboxSettings.Read".
     You can use the "UseClientSecret" switch parameter to configure a new ClientSecret for the app. If this parameter is ommitted, we will use a Certificate.
     You can pass a certificate path if you have an existing certificate, or leave the parameter blank and a new self-signed certificate will be created.
 

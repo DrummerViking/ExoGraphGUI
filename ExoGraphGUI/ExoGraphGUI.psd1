@@ -3,7 +3,7 @@
 	RootModule = 'ExoGraphGUI.psm1'
 	
 	# Version number of this module.
-	ModuleVersion = '1.0.0'
+	ModuleVersion = '1.1.0'
 	
 	# ID used to uniquely identify this module
 	GUID = '01b4d9df-0d7a-4697-abf1-23173181029a'
