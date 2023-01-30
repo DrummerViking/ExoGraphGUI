@@ -5,6 +5,7 @@
     
     .DESCRIPTION
     Saves new profile picture into the user's pofile.
+    Module required: Microsoft.Graph.Authentication
     Scope needed:
     Delegated: User.ReadWrite.All
     Application: User.ReadWrite.All

@@ -9,7 +9,7 @@ This tool will connect using Oauth to connect to Exchange Online. If "Modern Aut
 
  > This Module requires Powershell 5.1 and above. It should work fine in PS7 and PS5.1.  
  > This Module will install different Microsoft.Graph.* modules, in order to use graph to connect to Exchange Online.  
- > Graph scopes required: "Mail.ReadWrite", "Mail.Send", "MailboxSettings.Read"  
+ > Graph scopes required: "Mail.ReadWrite", "Mail.Send", "MailboxSettings.Read", "User.ReadWrite.All"  
  
 ## Installation
 
