@@ -1,4 +1,4 @@
-﻿Function Method4 {
+﻿Function New-CustomFolder {
     <#
     .SYNOPSIS
     Method to create a custom folder in mailbox's Root.
@@ -17,7 +17,7 @@
     DisplayName of the folder to be created.
 
     .EXAMPLE
-    PS C:\> Method4
+    PS C:\> New-CustomFolder
     Method to create a custom folder in mailbox's Root.
 
     #>
@@ -37,7 +37,7 @@
         }
         New-MgUserMailFolder -UserId $Account -BodyParameter $params
 
-        Write-PSFMessage -Level Host -Message "Task finished succesfully. Folder Created: $DisplayName" -FunctionName "Method 4" -Target $Account
+        Write-PSFMessage -Level Host -Message "Succesfully created folder: $DisplayName" -FunctionName "Method 4" -Target $Account
         $statusBarLabel.text = "Ready..."
         $PremiseForm.Refresh()
     }

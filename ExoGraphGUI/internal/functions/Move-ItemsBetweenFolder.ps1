@@ -1,4 +1,4 @@
-﻿Function Method8 {
+﻿Function Move-ItemsBetweenFolder {
     <#
     .SYNOPSIS
     Method to move items between folders.
@@ -29,7 +29,7 @@
     Optional parameter to search based on a subject text.
     
     .EXAMPLE
-    PS C:\> Method8
+    PS C:\> Move-ItemsBetweenFolder
 
     Moves items from source folder to target folder based on dates and/or subject filters.
 
@@ -47,6 +47,8 @@
     $statusBarLabel.Text = "Running..."
 
     if ( $FolderID -ne "" -and $TargetFolderID -ne "") {
+        $sourceFolderName = (get-mgusermailFolder -UserId $Account -MailFolderId $FolderID).Displayname
+        $targetFolderName = (get-mgusermailFolder -UserId $Account -MailFolderId $TargetFolderID).Displayname
         # Creating Filter variables
         $filter = $null
         if ($MsgSubject -ne "") {
@@ -65,6 +67,8 @@
             $output = $msg | Select-Object @{Name = "Action"; Expression = { "Moving Item" } }, ReceivedDateTime, Subject
             Move-MgUserMessage -UserId $Account -MessageId $msg.Id -BodyParameter $params
             $array.Add($output)
+            Write-PSFMessage -Level Verbose -Message $output -FunctionName "Method 8" -Target $Account
+            
         }
         $dgResults.datasource = $array
         $dgResults.AutoResizeColumns()
@@ -72,7 +76,7 @@
         $txtBoxResults.Visible = $False
         $PremiseForm.refresh()
         $statusBarLabel.text = "Ready. Moved Items: $i"
-        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 8" -Target $Account
+        Write-PSFMessage -Level Host -Message "Succesfully moved items from '$sourceFolderName' to '$targetFolderName'." -FunctionName "Method 8" -Target $Account
     }
     else {
         [Microsoft.VisualBasic.Interaction]::MsgBox("FolderID textbox or TargetFolderID is empty. Check and try again", [Microsoft.VisualBasic.MsgBoxStyle]::Okonly, "Information Message")

@@ -1,4 +1,4 @@
-﻿Function Method5 {
+﻿Function Remove-SpecificFolder {
     <#
     .SYNOPSIS
     Method to delete a specific folder in the user mailbox.
@@ -17,7 +17,7 @@
     FolderId of the folder to be deleted.
 
     .EXAMPLE
-    PS C:\> Method5
+    PS C:\> Remove-SpecificFolder
     Method to delete a specific folder in the user mailbox.
 
     #>
@@ -33,7 +33,7 @@
     {
         Remove-MgUserMailFolder -UserId $Account -MailFolderId $FolderId
 
-        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 5" -Target $Account
+        Write-PSFMessage -Level Host -Message "Succesfully removed folder $folderID." -FunctionName "Method 5" -Target $Account
         $statusBarLabel.text = "Ready..."
         $PremiseForm.Refresh()
     }

@@ -1,4 +1,7 @@
 ﻿# Changelog
+## 1.2.0 (2023-01-30)
+ - Added some verbose logging to available exported logs.
+ - Added new functionality to get and upload profile picture.
 ## 1.1.1 (2023-01-20)
  - Added small warning info button for new method12. also fixed some minor display issues.
 ## 1.1.0 (2023-01-20)

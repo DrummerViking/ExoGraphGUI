@@ -1,4 +1,4 @@
-﻿Function Method12 {
+﻿Function New-EmailInInbox {
     <#
     .SYNOPSIS
     Function to inject an email messages through MS Graph.
@@ -29,12 +29,8 @@
     Use this switch parameter to add an attachment to sample messages.
 
     .EXAMPLE
-    PS C:\> Method12 -ToRecipients "john@contoso.com"
-    Then will send the email message to "john@contoso.com" from the user previously authenticated.
-
-    .EXAMPLE
-    PS C:\> Method12 -ToRecipients "julia@contoso.com","carlos@contoso.com" -Subject "Lets meet!"
-    Then will send the email message to "julia@contoso.com" and "carlos@contoso.com" and bcc to "mark@contoso.com", from the user previously authenticated.
+    PS C:\> New-EmailInInbox -ToRecipients "john@contoso.com"
+    Then will inject the email message to "john@contoso.com" from the user previously authenticated into the user's Inbox.
 #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
     [Cmdletbinding()]
@@ -121,12 +117,13 @@
                 New-MgUserMessageAttachment -UserId $Account -MessageId $msg.Id -BodyParameter $attachParams
             }
             Move-MgUserMessage -UserId $Account -MessageId $msg.id -DestinationId "inbox"
+            Write-PSFMessage -Level Verbose -Message "Succesfully injected email '$Subject'." -FunctionName "Method 12" -Target $Account
         }
         $statusBarLabel.text = "Ready. Mail injected."
-        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 12" -Target $Account
+        Write-PSFMessage -Level Host -Message "Succesfully injected sample message '$subject' into Inbox." -FunctionName "Method 12" -Target $Account
     }
     catch {
         $statusBarLabel.text = "Something failed to inject the email message using graph. Ready."
-        Write-PSFMessage -Level Error -Message "Something failed to inject the email message using graph. Error message: $_" -FunctionName "Method 11" -Target $Account
+        Write-PSFMessage -Level Error -Message "Something failed to inject the email message using graph. Error message: $_" -FunctionName "Method 12" -Target $Account
     }
 }

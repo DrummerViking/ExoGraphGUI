@@ -1,4 +1,4 @@
-﻿Function Method7 {
+﻿Function Get-UserOOFSettings {
     <#
     .SYNOPSIS
     Method to get user's OOF Settings.
@@ -14,7 +14,7 @@
     User's UPN to get OOF settings from.
 
     .EXAMPLE
-    PS C:\> Method7
+    PS C:\> Get-UserOOFSettings
     Method to get user's OOF Settings.
 
     #>
@@ -35,6 +35,7 @@
         @{ Name = "InternalReplyMessage" ; Expression = { $response["InternalReplyMessage"] } }, `
         @{ Name = "ExternalReplyMessage" ; Expression = { $response["ExternalReplyMessage"] } }
     $array.Add($output)
+    Write-PSFMessage -Level Verbose -Message $output -FunctionName "Method7" -Target $Account
 
     $dgResults.datasource = $array
     $dgResults.AutoResizeColumns()
@@ -42,5 +43,5 @@
     $txtBoxResults.Visible = $False
     $PremiseForm.refresh()
     $statusBarLabel.text = "Ready..."
-    Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 7" -Target $Account
+    Write-PSFMessage -Level Host -Message "Succesfully retrieved OOF settings." -FunctionName "Method 7" -Target $Account
 }

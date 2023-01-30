@@ -1,4 +1,4 @@
-﻿Function Method6 {
+﻿Function Get-UserInboxRule {
     <#
     .SYNOPSIS
     Method to get user's Inbox Rules.
@@ -14,7 +14,7 @@
     User's UPN to get mail folders from.
     
     .EXAMPLE
-    PS C:\> Method6
+    PS C:\> Get-UserInboxRule
     Method to get user's Inbox Rules.
 
     #>
@@ -29,6 +29,7 @@
     foreach ( $rule in $rules ) {
         $output = $rule | Select-Object DisplayName, HasError, IsEnabled, IsReadOnly, Sequence
         $array.Add($output)
+        Write-PSFMessage -Level Verbose -Message $output -FunctionName "Method6" -Target $Account
     }
     $dgResults.datasource = $array
     $dgResults.AutoResizeColumns()
@@ -36,5 +37,5 @@
     $txtBoxResults.Visible = $False
     $PremiseForm.refresh()
     $statusBarLabel.text = "Ready..."
-    Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 6" -Target $Account
+    Write-PSFMessage -Level Host -Message "Succesfully retrieved inbox rules." -FunctionName "Method 6" -Target $Account
 }
