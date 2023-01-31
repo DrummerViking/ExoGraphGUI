@@ -18,6 +18,7 @@
     Method to get user's OOF Settings.
 
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns")]
     [CmdletBinding()]
     param(
         [String] $Account

@@ -28,12 +28,18 @@
     .PARAMETER UseAttachment
     Use this switch parameter to add an attachment to sample messages.
 
+    .PARAMETER Confirm
+    If this switch is enabled, you will be prompted for confirmation before executing any operations that change state.
+
+    .PARAMETER WhatIf
+    If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
+
     .EXAMPLE
     PS C:\> New-EmailInInbox -ToRecipients "john@contoso.com"
     Then will inject the email message to "john@contoso.com" from the user previously authenticated into the user's Inbox.
 #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
-    [Cmdletbinding()]
+    [CmdletBinding(SupportsShouldProcess = $True, ConfirmImpact = 'Low')]
     Param (
         [String] $Account,
 

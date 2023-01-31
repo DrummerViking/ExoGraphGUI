@@ -25,13 +25,19 @@
     .PARAMETER MsgSubject
     Optional parameter to search based on a subject text.
 
+    .PARAMETER Confirm
+    If this switch is enabled, you will be prompted for confirmation before executing any operations that change state.
+
+    .PARAMETER WhatIf
+    If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
+
     .EXAMPLE
     PS C:\> Remove-ItemsInFolder
     Method to Delete a subset of items in a folder.
 
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "")]
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $True, ConfirmImpact = 'Low')]
     param(
         [String] $Account,
         [String] $FolderID,
