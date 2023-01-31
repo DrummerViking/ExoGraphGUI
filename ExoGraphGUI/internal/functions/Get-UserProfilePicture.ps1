@@ -34,5 +34,6 @@
     }
     catch {
         Write-PSFMessage -Level Error -Message "The user doesn't seem to have a photo." -Target $Account
+        $statusBarLabel.text = "Ready. The user doesn't seem to have a photo."
     }
 }

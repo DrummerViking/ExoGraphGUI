@@ -27,7 +27,12 @@
     try {
         $statusBarLabel.Text = "Running..."
         Write-PSFMessage -Level Verbose -Message "uploading profile picture from: $NewProfilePicture" -FunctionName "Method 14" -Target $Account
-        $requestBody = Get-Content $NewProfilePicture -AsByteStream -Raw
+        if ( $PSVersionTable.PSVersion.Major -lt 7) {
+            $requestBody = Get-Content $NewProfilePicture -Raw -Encoding Byte
+        }
+        else {
+            $requestBody = Get-Content $NewProfilePicture -AsByteStream -Raw
+        }
         Invoke-MgGraphRequest -Method PUT -Uri "https://graph.microsoft.com/v1.0/users/$Account/photo/`$value" -Body $requestBody -ContentType "image/jpeg" -ErrorAction Stop
         
         $statusBarLabel.text = "Ready. Profile picture saved."
