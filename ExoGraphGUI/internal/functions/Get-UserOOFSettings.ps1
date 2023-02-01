@@ -18,7 +18,7 @@
     Method to get user's OOF Settings.
 
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     [CmdletBinding()]
     param(
         [String] $Account
@@ -36,7 +36,7 @@
         @{ Name = "InternalReplyMessage" ; Expression = { $response["InternalReplyMessage"] } }, `
         @{ Name = "ExternalReplyMessage" ; Expression = { $response["ExternalReplyMessage"] } }
     $array.Add($output)
-    Write-PSFMessage -Level Verbose -Message $output -FunctionName "Method7" -Target $Account
+    Write-PSFMessage -Level Verbose -Message $output -FunctionName "Method 7" -Target $Account
 
     $dgResults.datasource = $array
     $dgResults.AutoResizeColumns()

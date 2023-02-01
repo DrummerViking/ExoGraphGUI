@@ -17,7 +17,7 @@
     )
     $statusBarLabel.Text = "Running..."
     $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
-    $OpenFileDialog.initialDirectory = [Environment]::GetFolderPath("MyPictures")
+    $OpenFileDialog.InitialDirectory = [Environment]::GetFolderPath("MyPictures")
     $OpenFileDialog.Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|All files (*.*)|*.*"
     $null = $OpenFileDialog.ShowDialog()
     Write-PSFMessage -Level Verbose -Message "Selected profile picture file path: $($OpenFileDialog.FileName)" -FunctionName "Method 14" -Target $Account

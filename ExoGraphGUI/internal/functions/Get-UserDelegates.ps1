@@ -18,7 +18,7 @@
     Get user's Delegates information
 
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     [CmdletBinding()]
     param(
         $Account
