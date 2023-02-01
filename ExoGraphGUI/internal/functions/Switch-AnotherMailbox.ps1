@@ -1,4 +1,4 @@
-﻿Function Method13 {
+﻿Function Switch-AnotherMailbox {
     <#
     .SYNOPSIS
     Method to switch to another mailbox.
@@ -10,7 +10,7 @@
     User's UPN to switch to.
     
     .EXAMPLE
-    PS C:\> Method13
+    PS C:\> Switch-AnotherMailbox
     Method to switch to another mailbox.
 
     #>
@@ -23,7 +23,7 @@
     $statusBarLabel.Text = "Running..."
 
      if ( $Account -ne "" ) {
-        $labImpersonation.Location = New-Object System.Drawing.Point(440,135)
+        $labImpersonation.Location = New-Object System.Drawing.Point(440,200)
         $labImpersonation.Size = New-Object System.Drawing.Size(300,20)
         $labImpersonation.Name = "labImpersonation"
         $labImpersonation.ForeColor = "Blue"
@@ -31,7 +31,7 @@
         $labImpersonation.Text = $Account
         $PremiseForm.Text = "Managing user: " + $Account + ". Choose your Option"
 
-        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 13" -Target $Account
+        Write-PSFMessage -Level Host -Message "Succesfully switched to user account: $Account" -FunctionName "Method 15" -Target $Account
         $statusBarLabel.text = "Ready..."
         $PremiseForm.Refresh()
         return $Account

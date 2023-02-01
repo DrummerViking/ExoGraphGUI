@@ -1,4 +1,4 @@
-﻿Function Method3 {
+﻿Function Get-ItemsInFolder {
     <#
     .SYNOPSIS
     Method to list items in a specific folders in the user mailbox.
@@ -26,7 +26,7 @@
     Optional parameter to search based on a subject text.
     
     .EXAMPLE
-    PS C:\> Method3
+    PS C:\> Get-ItemsInFolder
     
     Method to list items in a specific folders in the user mailbox.
 
@@ -48,7 +48,7 @@
         if ($MsgSubject -ne "") {
             $filter = "Subject eq '$MsgSubject'"
         }
-        
+        $sourceFolderName = (get-mgusermailFolder -UserId $Account -MailFolderId $FolderID).Displayname
         $array = New-Object System.Collections.ArrayList
         $msgs = Get-MgUserMailFolderMessage -UserId $Account -MailFolderId $folderID -Filter $filter -All | Where-Object {$_.ReceivedDateTime -ge $StartDate -and $_.ReceivedDateTime -lt $EndDate} | Select-Object subject, @{N = "Sender"; E = { $_.Sender.EmailAddress.Address } }, ReceivedDateTime, isRead
         $null = $msgs | ForEach-Object { $array.Add($_) }
@@ -59,7 +59,7 @@
         $txtBoxResults.Visible = $False
         $PremiseForm.refresh()
         $statusBarLabel.text = "Ready. Items found: $($array.Count)"
-        Write-PSFMessage -Level Output -Message "Task finished succesfully" -FunctionName "Method 3" -Target $Account
+        Write-PSFMessage -Level Output -Message "Succesfully listed items in folder '$sourceFolderName'." -FunctionName "Method 3" -Target $Account
     }
     else {
         [Microsoft.VisualBasic.Interaction]::MsgBox("FolderID textbox is empty. Check and try again", [Microsoft.VisualBasic.MsgBoxStyle]::Okonly, "Information Message")

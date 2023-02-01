@@ -1,4 +1,4 @@
-﻿Function Method9 {
+﻿Function Remove-ItemsInFolder {
     <#
     .SYNOPSIS
     Method to Delete a subset of items in a folder.
@@ -25,13 +25,19 @@
     .PARAMETER MsgSubject
     Optional parameter to search based on a subject text.
 
+    .PARAMETER Confirm
+    If this switch is enabled, you will be prompted for confirmation before executing any operations that change state.
+
+    .PARAMETER WhatIf
+    If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
+
     .EXAMPLE
-    PS C:\> Method9
+    PS C:\> Remove-ItemsInFolder
     Method to Delete a subset of items in a folder.
 
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "")]
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $True, ConfirmImpact = 'Low')]
     param(
         [String] $Account,
         [String] $FolderID,
@@ -43,6 +49,8 @@
 
     if ( $FolderID -ne "" )
     {
+        $sourceFolderName = (get-mgusermailFolder -UserId $Account -MailFolderId $FolderID).Displayname
+
         # Creating Filter variables
         $filter = $null
         if ($MsgSubject -ne "") {
@@ -57,6 +65,7 @@
             $i++
             Remove-MgUserMessage -UserId $Account -MessageId $msg.Id
             $output = $msg | Select-Object @{Name="Action";Expression={"Deleting Item"}}, ReceivedDateTime, Subject
+            Write-PSFMessage -Level Verbose -Message $output -FunctionName "Method9" -Target $Account
             $array.Add($output)
         }
 
@@ -66,7 +75,7 @@
         $txtBoxResults.Visible = $False
         $PremiseForm.refresh()
         $statusBarLabel.text = "Ready. Deleted items: $i"
-        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 9" -Target $Account
+        Write-PSFMessage -Level Host -Message "Succesfully deleted messages from folder: $sourceFolderName." -FunctionName "Method 9" -Target $Account
     }
     else
     {

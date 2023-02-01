@@ -66,7 +66,7 @@
 		"ComputerName", "Username", "Level", "FunctionName", "Message", "Type", "ModuleName", "File", "Line", "Tags", "TargetObject", "Runspace", "Callstack" | Sort-Object Date -Descending
 
 	Switch ( $OutputType) {
-		CSV { $output | export-csv -Path $FilePath -NoTypeInformation }
-		GridView { $output | Out-GridView }
+		CSV { $output | Sort-Object Date,Time -Descending | export-csv -Path $FilePath -NoTypeInformation }
+		GridView { $output | Sort-Object Date,Time -Descending | Out-GridView }
 	}
 }

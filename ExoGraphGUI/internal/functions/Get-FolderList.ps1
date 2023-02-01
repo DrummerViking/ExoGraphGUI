@@ -1,4 +1,4 @@
-﻿Function Method1 {
+﻿Function Get-FolderList {
     <#
     .SYNOPSIS
     Method to list folders in the user mailbox.
@@ -14,7 +14,7 @@
     User's UPN to get mail folders from.
 
     .EXAMPLE
-    PS C:\> Method1
+    PS C:\> Get-FolderList
     lists folders in the user mailbox.
 
     #>
@@ -62,5 +62,10 @@
     $txtBoxResults.Visible = $False
     $PremiseForm.refresh()
     $statusBarLabel.Text = "Ready. Folders found: $($array.Count)"
-    Write-PSFMessage -Level Output -Message "Task finished succesfully" -FunctionName "Method 1 & 2" -Target $Account
+    if ($radiobutton1.Checked) {
+        Write-PSFMessage -Level Output -Message "Succesfully listed folders in the primary Mailbox" -FunctionName "Method 1" -Target $Account
+    }
+    elseif ($radiobutton2.Checked) {
+        Write-PSFMessage -Level Output -Message "Succesfully listed folders in Recoverable Items" -FunctionName "Method 2" -Target $Account
+    }
 }

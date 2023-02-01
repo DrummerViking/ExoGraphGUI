@@ -1,4 +1,4 @@
-﻿Function Method11 {
+﻿Function Send-GraphEmailMessage {
     <#
     .SYNOPSIS
     Function to send email messages through MS Graph.
@@ -14,7 +14,7 @@
     User's UPN to send the email message from.
 
     .PARAMETER ToRecipients
-    List of recipients in the "To" list. This is a Mandatory parameter.
+    List of recipients in the "To" list. This is a Mandatory parameter. If no value is passed, it will take the same user account being used.
     
     .PARAMETER CCRecipients
     List of recipients in the "CC" list. This is an optional parameter.
@@ -29,11 +29,11 @@
     Use this parameter to set the body's text. By default will have: "Test message sent via Graph using Powershell".
     
     .EXAMPLE
-    PS C:\> Method11 -ToRecipients "john@contoso.com"
+    PS C:\> Send-GraphEmailMessage -ToRecipients "john@contoso.com"
     Then will send the email message to "john@contoso.com" from the user previously authenticated.
 
     .EXAMPLE
-    PS C:\> Method11 -ToRecipients "julia@contoso.com","carlos@contoso.com" -BccRecipients "mark@contoso.com" -Subject "Lets meet!"
+    PS C:\> Send-GraphEmailMessage -ToRecipients "julia@contoso.com","carlos@contoso.com" -BccRecipients "mark@contoso.com" -Subject "Lets meet!"
     Then will send the email message to "julia@contoso.com" and "carlos@contoso.com" and bcc to "mark@contoso.com", from the user previously authenticated.
 #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
@@ -54,8 +54,9 @@
     )
     $statusBarLabel.Text = "Running..."
 
-    if ( $subject -eq "" ) { $Subject = "Test message sent via Graph" }
-    if ( $Body -eq "" ) { $Body = "Test message sent via Graph using ExoGraphGUI tool" }
+    if ( $ToRecipients -eq "") { $ToRecipients = $Account }
+    if ( $subject -eq "" )     { $Subject = "Test message sent via Graph" }
+    if ( $Body -eq "" )        { $Body = "Test message sent via Graph using ExoGraphGUI tool" }
 
     # Base mail body Hashtable
     $global:MailBody = @{
@@ -116,7 +117,8 @@
     try {
         Send-MgUserMail -UserId $Account -BodyParameter $MailBody -ErrorAction Stop
         $statusBarLabel.text = "Ready. Mail sent."
-        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 11" -Target $Account
+        Write-PSFMessage -Level Verbose -Message "Succesfully sent email '$Subject' to $ToRecipients, $CCRecipients, $BccRecipients." -FunctionName "Method 11" -Target $Account
+        Write-PSFMessage -Level Host -Message "Succesfully sent email '$Subject'." -FunctionName "Method 11" -Target $Account
     }
     catch {
         $statusBarLabel.text = "Something failed to send the email message using graph. Ready."

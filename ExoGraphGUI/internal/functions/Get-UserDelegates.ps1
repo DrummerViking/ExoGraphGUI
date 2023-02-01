@@ -1,4 +1,4 @@
-﻿Function Method10 {
+﻿Function Get-UserDelegates {
     <#
     .SYNOPSIS
     Get user's Delegates information
@@ -14,10 +14,11 @@
     User's UPN to get delegate settings from.
     
     .EXAMPLE
-    PS C:\> Method10
+    PS C:\> Get-UserDelegates
     Get user's Delegates information
 
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     [CmdletBinding()]
     param(
         $Account

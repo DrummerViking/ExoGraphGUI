@@ -3,7 +3,7 @@
 	RootModule = 'ExoGraphGUI.psm1'
 	
 	# Version number of this module.
-	ModuleVersion = '1.1.1'
+	ModuleVersion = '1.2.0'
 	
 	# ID used to uniquely identify this module
 	GUID = '01b4d9df-0d7a-4697-abf1-23173181029a'
@@ -29,9 +29,7 @@
 		@{ ModuleName='PSFramework'; ModuleVersion='1.7.249' }
 		@{ ModuleName='BurntToast'; ModuleVersion='0.8.5' }
 		@{ ModuleName='Microsoft.Graph.Authentication'; ModuleVersion='1.20.0' }
-		#@{ ModuleName='Microsoft.Graph.Calendar'; ModuleVersion='1.20.0' }
 		@{ ModuleName='Microsoft.Graph.Mail'; ModuleVersion='1.20.0' }
-		#@{ ModuleName='Microsoft.Graph.Users'; ModuleVersion='1.20.0' }
 		@{ ModuleName='Microsoft.Graph.Users.Actions'; ModuleVersion='1.20.0' }
 	)
 	

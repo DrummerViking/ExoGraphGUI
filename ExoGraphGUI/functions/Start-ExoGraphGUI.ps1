@@ -116,6 +116,9 @@
         $UseAttachment = New-Object System.Windows.Forms.Label
         $global:checkboxUseAttachment = New-Object System.Windows.Forms.Checkbox
         $labAttachmentsWarning = New-Object System.Windows.Forms.Label
+        $pictureBox = new-object Windows.Forms.PictureBox
+        $buttonSelectPicture = New-Object System.Windows.Forms.Button
+        $buttonSavePicture = New-Object System.Windows.Forms.Button
         $dgResults = New-Object System.Windows.Forms.DataGridView
         $txtBoxResults = New-Object System.Windows.Forms.Label
         $InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
@@ -154,7 +157,10 @@
             $PremiseForm.Controls.RemoveByKey("NumericNumOfMsgs")
             $PremiseForm.Controls.RemoveByKey("UseAttachment")
             $PremiseForm.Controls.RemoveByKey("checkboxUseAttachment")
-
+            $PremiseForm.Controls.RemoveByKey("PictureBox")
+            $PremiseForm.Controls.RemoveByKey("buttonSelectPicture")
+            $PremiseForm.Controls.RemoveByKey("buttonSavePicture")
+            
             #Label FromDate
             $labFromDate.Location = New-Object System.Drawing.Point(5, 285)
             $labFromDate.Size = New-Object System.Drawing.Size(80, 35)
@@ -212,7 +218,7 @@
                 $labFolderID.Size = New-Object System.Drawing.Size(95, 20)
                 $labFolderID.Text = "SourceFolderID:"
             }
-            elseif ($radiobutton13.Checked) {
+            elseif ($radiobutton15.Checked) {
                 $labFolderID.Location = New-Object System.Drawing.Point(5, 285)
                 $labFolderID.Size = New-Object System.Drawing.Size(95, 20)
                 $labFolderID.Text = "E-mail Address:"
@@ -323,15 +329,40 @@
             $labAttachmentsWarning.Location = New-Object System.Drawing.Point(660, 82)
             $labAttachmentsWarning.Size = New-Object System.Drawing.Size(10, 20)
             $labAttachmentsWarning.Name = "labAttachmentsWarning"
-            $labAttachmentsWarning.Font = New-Object System.Drawing.Font("Arial",9,[System.Drawing.FontStyle]::Underline)
+            $labAttachmentsWarning.Font = New-Object System.Drawing.Font("Arial", 9, [System.Drawing.FontStyle]::Underline)
             $labAttachmentsWarning.ForeColor = "Blue"
             $labAttachmentsWarning.Text = "?"
             $labAttachmentsWarning.add_Click({
-                [Microsoft.VisualBasic.Interaction]::MsgBox("Injecting sample messages with no attachments should be pretty fast.
-But when using attachments, it might take considerable seconds.",[Microsoft.VisualBasic.MsgBoxStyle]::Okonly,"Information Message")
-            })
+                    [Microsoft.VisualBasic.Interaction]::MsgBox("Injecting sample messages with no attachments should be pretty fast.
+But when using attachments, it might take considerable seconds.", [Microsoft.VisualBasic.MsgBoxStyle]::Okonly, "Information Message")
+                })
             $PremiseForm.Controls.Add($labAttachmentsWarning)
 
+            # Picture box
+            $pictureBox.Location = New-Object System.Drawing.Point(5, 317)
+            $pictureBox.Size = New-Object System.Drawing.Size(140, 140)
+            $pictureBox.Name = "PictureBox"
+
+            # Button select new profile picture
+            $buttonSelectPicture.DataBindings.DefaultDataSourceUpdateMode = 0
+            $buttonSelectPicture.ForeColor = [System.Drawing.Color]::FromArgb(255, 0, 0, 0)
+            $buttonSelectPicture.Location = New-Object System.Drawing.Point(5, 287)
+            $buttonSelectPicture.Size = New-Object System.Drawing.Size(200, 25)
+            $buttonSelectPicture.Name = "buttonSelectPicture"
+            $buttonSelectPicture.Text = "Select new picture"
+            $buttonSelectPicture.UseVisualStyleBackColor = $True
+            $buttonSelectPicture.add_Click({ $global:selectedProfilePicturePath = Select-ProfilePicture })
+
+            # Button Save new profile picture
+            $buttonSavePicture.DataBindings.DefaultDataSourceUpdateMode = 0
+            $buttonSavePicture.ForeColor = [System.Drawing.Color]::FromArgb(255, 0, 0, 0)
+            $buttonSavePicture.Location = New-Object System.Drawing.Point(210, 287)
+            $buttonSavePicture.Size = New-Object System.Drawing.Size(200, 25)
+            $buttonSavePicture.Name = "buttonSavePicture"
+            $buttonSavePicture.Text = "Upload new picture"
+            $buttonSavePicture.UseVisualStyleBackColor = $True
+            $buttonSavePicture.add_Click({ Save-ProfilePicture -Account $Account -NewProfilePicture $selectedProfilePicturePath })
+    
             if ($radiobutton3.Checked) {
                 $PremiseForm.Controls.Add($labFolderID)
                 $PremiseForm.Controls.Add($txtBoxFolderID)
@@ -399,6 +430,16 @@ But when using attachments, it might take considerable seconds.",[Microsoft.Visu
                 $PremiseForm.Controls.Add($checkboxUseAttachment)
             }
             elseif ($radiobutton13.Checked) {
+                $pictureBox.Image = $null
+                $PremiseForm.Controls.Add($pictureBox)
+            }
+            elseif ($radiobutton14.Checked) {
+                $pictureBox.Image = $null
+                $PremiseForm.Controls.Add($pictureBox)
+                $PremiseForm.Controls.Add($buttonSelectPicture)
+                $PremiseForm.Controls.Add($buttonSavePicture)
+            }
+            elseif ($radiobutton15.Checked) {
                 $PremiseForm.Controls.Add($labFolderID)
                 $PremiseForm.Controls.Add($txtBoxFolderID)
             }
@@ -424,8 +465,10 @@ But when using attachments, it might take considerable seconds.",[Microsoft.Visu
         $PremiseForm.Controls.Add($radiobutton10)
         $PremiseForm.Controls.Add($radiobutton11)
         $PremiseForm.Controls.Add($radiobutton12)
+        $PremiseForm.Controls.Add($radiobutton13)
+        $PremiseForm.Controls.Add($radiobutton14)
         if ( $null -eq $service.Account ) {
-            $PremiseForm.Controls.Add($radiobutton13)
+            $PremiseForm.Controls.Add($radiobutton15)
         }
         
         $PremiseForm.Controls.Add($buttonGo)
@@ -443,7 +486,13 @@ But when using attachments, it might take considerable seconds.",[Microsoft.Visu
         $PremiseForm.Text = "Managing user: $Account. Choose your Option"
         $PremiseForm.StartPosition = "CenterScreen"
         $PremiseForm.KeyPreview = $True
-        $PremiseForm.Add_KeyDown({ if ($_.KeyCode -eq "Escape") { $PremiseForm.Close() } })
+        $PremiseForm.Add_KeyDown({
+                if ($_.KeyCode -eq "Escape") {
+                    Get-ChildItem -Path "$env:temp\profilephoto*" | Remove-Item -Force -ErrorAction SilentlyContinue
+                    $PremiseForm.Close()
+                    return
+                }
+            })
         #
         # radiobutton1
         #
@@ -572,7 +621,7 @@ But when using attachments, it might take considerable seconds.",[Microsoft.Visu
         $radiobutton13.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton13.Location = New-Object System.Drawing.Point(400, 110)
         $radiobutton13.Size = New-Object System.Drawing.Size(300, 20)
-        $radiobutton13.Text = "13 - Switch to another Mailbox:"
+        $radiobutton13.Text = "13 - Get profile photo"
         $radiobutton13.Checked = $false
         $radiobutton13.UseVisualStyleBackColor = $True
         $radiobutton13.Add_Click({ & $ExpandFilters })
@@ -582,7 +631,7 @@ But when using attachments, it might take considerable seconds.",[Microsoft.Visu
         $radiobutton14.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton14.Location = New-Object System.Drawing.Point(400, 140)
         $radiobutton14.Size = New-Object System.Drawing.Size(300, 20)
-        $radiobutton14.Text = "14"
+        $radiobutton14.Text = "14 - Upload profile photo"
         $radiobutton14.Checked = $false
         $radiobutton14.UseVisualStyleBackColor = $True
         $radiobutton14.Add_Click({ & $ExpandFilters })
@@ -592,7 +641,7 @@ But when using attachments, it might take considerable seconds.",[Microsoft.Visu
         $radiobutton15.DataBindings.DefaultDataSourceUpdateMode = [System.Windows.Forms.DataSourceUpdateMode]::OnValidation
         $radiobutton15.Location = New-Object System.Drawing.Point(400, 170)
         $radiobutton15.Size = New-Object System.Drawing.Size(300, 20)
-        $radiobutton15.Text = "15"
+        $radiobutton15.Text = "15 - Switch to another Mailbox:"
         $radiobutton15.Checked = $false
         $radiobutton15.UseVisualStyleBackColor = $True
         $radiobutton15.Add_Click({ & $ExpandFilters })
@@ -616,19 +665,21 @@ But when using attachments, it might take considerable seconds.",[Microsoft.Visu
         $buttonGo.Text = "Go"
         $buttonGo.UseVisualStyleBackColor = $True
         $buttonGo.add_Click({
-                if ($radiobutton1.Checked) { Method1 -Account $Account }
-                elseif ($radiobutton2.Checked) { Method1 -Account $Account }
-                elseif ($radiobutton3.Checked) { Method3 -Account $Account -FolderId $txtBoxFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
-                elseif ($radiobutton4.Checked) { Method4 -Account $Account -DisplayName $txtBoxFolderID.Text }
-                elseif ($radiobutton5.Checked) { Method5 -Account $Account -Folderid $txtBoxFolderID.Text }
-                elseif ($radiobutton6.Checked) { Method6 -Account $Account }
-                elseif ($radiobutton7.Checked) { Method7 -Account $Account }
-                elseif ($radiobutton8.Checked) { Method8 -Account $Account -FolderId $txtBoxFolderID.Text -TargetFolderID $txtBoxTargetFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
-                elseif ($radiobutton9.Checked) { Method9 -Account $Account -FolderId $txtBoxFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
-                elseif ($radiobutton10.Checked) { Method10 -Account $Account }
-                elseif ($radiobutton11.Checked) { Method11 -Account $Account -ToRecipients $txtBoxToRecipients.Text -CCRecipients $txtBoxCCRecipients.Text -BCCRecipients $txtBoxBCCRecipients.text -Subject $txtboxMailSubject.Text -Body $txtboxMailBody.Text }
-                elseif ($radiobutton12.Checked) { Method12 -Account $Account -ToRecipients $txtBoxToRecipients.Text -Subject $txtboxMailSubject.Text -Body $txtboxMailBody.Text -NumberOfMessages $NumericNumOfMsgs.Value -UseAttachment:$checkboxUseAttachment.Checked }
-                elseif ($radiobutton13.Checked) { $Global:Account = Method13 -Account $txtBoxFolderID.Text }
+                if ($radiobutton1.Checked) { Get-FolderList -Account $Account }
+                elseif ($radiobutton2.Checked) { Get-FolderList -Account $Account }
+                elseif ($radiobutton3.Checked) { Get-ItemsInFolder -Account $Account -FolderId $txtBoxFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
+                elseif ($radiobutton4.Checked) { New-CustomFolder -Account $Account -DisplayName $txtBoxFolderID.Text }
+                elseif ($radiobutton5.Checked) { Remove-SpecificFolder -Account $Account -Folderid $txtBoxFolderID.Text }
+                elseif ($radiobutton6.Checked) { Get-UserInboxRule -Account $Account }
+                elseif ($radiobutton7.Checked) { Get-UserOOFSettings -Account $Account }
+                elseif ($radiobutton8.Checked) { Move-ItemsBetweenFolder -Account $Account -FolderId $txtBoxFolderID.Text -TargetFolderID $txtBoxTargetFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
+                elseif ($radiobutton9.Checked) { Remove-ItemsInFolder -Account $Account -FolderId $txtBoxFolderID.Text -StartDate $FromDatePicker.Value.ToString("yyyy-MM-dd") -EndDate $ToDatePicker.Value.ToString("yyyy-MM-dd") -MsgSubject $txtBoxSubject.Text }
+                elseif ($radiobutton10.Checked) { Get-UserDelegates -Account $Account }
+                elseif ($radiobutton11.Checked) { Send-GraphEmailMessage -Account $Account -ToRecipients $txtBoxToRecipients.Text -CCRecipients $txtBoxCCRecipients.Text -BCCRecipients $txtBoxBCCRecipients.text -Subject $txtboxMailSubject.Text -Body $txtboxMailBody.Text }
+                elseif ($radiobutton12.Checked) { New-EmailInInbox -Account $Account -ToRecipients $txtBoxToRecipients.Text -Subject $txtboxMailSubject.Text -Body $txtboxMailBody.Text -NumberOfMessages $NumericNumOfMsgs.Value -UseAttachment:$checkboxUseAttachment.Checked }
+                elseif ($radiobutton13.Checked) { Get-UserProfilePicture -Account $Account }
+                elseif ($radiobutton14.Checked) { }
+                elseif ($radiobutton15.Checked) { $Global:Account = Switch-AnotherMailbox -Account $txtBoxFolderID.Text }
             })
 
         #"Exit" button
@@ -639,7 +690,11 @@ But when using attachments, it might take considerable seconds.",[Microsoft.Visu
         $buttonExit.Name = "Exit"
         $buttonExit.Text = "Exit"
         $buttonExit.UseVisualStyleBackColor = $True
-        $buttonExit.add_Click({ $PremiseForm.Close(); return })
+        $buttonExit.add_Click({
+                Get-ChildItem -Path "$env:temp\profilephoto*" | Remove-Item -Force -ErrorAction SilentlyContinue
+                $PremiseForm.Close()
+                return
+            })
         
         #TextBox results
         $txtBoxResults.DataBindings.DefaultDataSourceUpdateMode = 0

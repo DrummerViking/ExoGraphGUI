@@ -1,4 +1,4 @@
-﻿Function Method5 {
+﻿Function Remove-SpecificFolder {
     <#
     .SYNOPSIS
     Method to delete a specific folder in the user mailbox.
@@ -16,12 +16,18 @@
     .PARAMETER FolderId
     FolderId of the folder to be deleted.
 
+    .PARAMETER Confirm
+    If this switch is enabled, you will be prompted for confirmation before executing any operations that change state.
+
+    .PARAMETER WhatIf
+    If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
+
     .EXAMPLE
-    PS C:\> Method5
+    PS C:\> Remove-SpecificFolder
     Method to delete a specific folder in the user mailbox.
 
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $True, ConfirmImpact = 'Low')]
     param(
         [String] $Account,
 
@@ -33,7 +39,7 @@
     {
         Remove-MgUserMailFolder -UserId $Account -MailFolderId $FolderId
 
-        Write-PSFMessage -Level Host -Message "Task finished succesfully" -FunctionName "Method 5" -Target $Account
+        Write-PSFMessage -Level Host -Message "Succesfully removed folder $folderID." -FunctionName "Method 5" -Target $Account
         $statusBarLabel.text = "Ready..."
         $PremiseForm.Refresh()
     }
