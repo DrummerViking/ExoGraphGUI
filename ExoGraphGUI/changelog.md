@@ -1,5 +1,5 @@
 ﻿# Changelog
-## 1.2.0 (2023-01-30)
+## 1.2.0 (2023-02-01)
  - Added some verbose logging to available exported logs.
  - Added new functionality to get and upload profile picture.
 ## 1.1.1 (2023-01-20)
