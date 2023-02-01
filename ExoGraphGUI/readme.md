@@ -58,7 +58,7 @@ Please check on the following page for more details and options to configure you
 ## Module logging
 
 The module offers the command `Export-ExoGraphGuiLog` in order to export module logs to CSV file and/or to Powershell GridView.  
-More info [here](/docs/Export-ExoGraphGuiLog.md).  
+More info [here](/docs/Export-ExoGraphGUILog.md).  
 
 ## Version History
 [Change Log](/ExoGraphGUI/changelog.md)
