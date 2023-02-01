@@ -14,11 +14,13 @@
     User's UPN to switch to.
     
     .EXAMPLE
-    PS C:\> Get-UserProfilePicture
+    PS C:\> Get-UserProfilePicture -Account "user@domain.com"
+
+    Gets user's profile picture from user "user@domain.com".
     #>
     [CmdletBinding()]
     param (
-        [String] $Account   
+        [String] $Account
     )
     $statusBarLabel.Text = "Running..."
 

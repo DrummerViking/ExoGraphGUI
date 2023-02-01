@@ -18,6 +18,8 @@
     
     .EXAMPLE
     PS C:\> Save-ProfilePicture -Account $Account -NewProfilePicture "C:\temp\photo.jpg"
+
+    Saves photo "C:\temp\photo.jpg" to the user $Account.
     #>
     [CmdletBinding()]
     param (
@@ -42,4 +44,4 @@
         Write-PSFMessage -Level Error -Message "Something failed to upload new profile picture. Error message. $_" -Target $Account
         $statusBarLabel.text = "Ready. Something failed to upload new profile picture."
     }
-} 
+}
