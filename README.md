@@ -1,5 +1,8 @@
 ﻿# EXO Graph GUI Tool
 
+![](https://img.shields.io/github/last-commit/DrummerViking/ExoGraphGUI/main?logo=Github&label=Last%20updated)
+![](https://img.shields.io/powershellgallery/dt/ExoGraphGUI?logo=Powershell&label=Gallery)
+
 ## About
 Graph tool to perform different operations in Exchange Online.  
 This tool is the new version replacing [EwsGUI](https://github.com/agallego-css/EwsGUI).  
